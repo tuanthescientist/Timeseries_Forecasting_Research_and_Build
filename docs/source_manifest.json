@@ -1,0 +1,75 @@
+{
+  "note": "Hashes establish file provenance, not authorship. Notebook executions were not revalidated.",
+  "files": [
+    {
+      "source_filename": "Bitcoin.ipynb",
+      "source_sha256": "1dc36956d74af81e31ac854f845967c5c8a6886b311e897756892ae3e8b096b8",
+      "published_path": "notebooks/exploratory/btc_lightgbm.ipynb",
+      "published_sha256": "85048fe61340751ed2f4a87a7c3d7f11f4871eff20bb258edfbab8570e702bfd",
+      "status": "exploratory; execution not revalidated"
+    },
+    {
+      "source_filename": "BTC_NeuralProphet.ipynb",
+      "source_sha256": "a1293ae46bdc55b880b69ca499210e350da2d623a8bcc1f709f1624259d97881",
+      "published_path": "notebooks/exploratory/btc_neuralprophet.ipynb",
+      "published_sha256": "67a083390871309925cde05cbb52a04ec7f4df5db97d883cd81b073f6388bab7",
+      "status": "exploratory; execution not revalidated"
+    },
+    {
+      "source_filename": "BNB_NeuralProphet.ipynb",
+      "source_sha256": "a81b84ef19f2f80e01b733fc0f510ee1e5fc7edeb98fd648373baa46b6b7099e",
+      "published_path": "notebooks/exploratory/bnb_neuralprophet.ipynb",
+      "published_sha256": "eff4aca7c182b731919f14d7aa043ac96f06545083de7f29c3a2e7ac0c1ee125",
+      "status": "exploratory; execution not revalidated"
+    },
+    {
+      "source_filename": "BTC_Chronos.ipynb",
+      "source_sha256": "e8e20fdef5de3e305d6dd72ca5f8d2243d8cd9a9555a5c050c2f4f50b68e8253",
+      "published_path": "notebooks/exploratory/btc_chronos.ipynb",
+      "published_sha256": "96d77b40a47958cb044a9865978ed87e276b1e53cd01c5ea74fd08ce00dad3d1",
+      "status": "exploratory; execution not revalidated"
+    },
+    {
+      "source_filename": "VN30_AutoARIMA_Sktime.ipynb",
+      "source_sha256": "5f53bc3b68fe534d4d2b3a891f44e9c6d7227351f2135cedea0ec979e4ce36c7",
+      "published_path": "notebooks/exploratory/vn30_autoarima.ipynb",
+      "published_sha256": "6debbf2d70d6fcac97bb9b5db21faac65eff64d41089d894894c0e3b5fea3286",
+      "status": "exploratory; execution not revalidated"
+    },
+    {
+      "source_filename": "VN30_from_JSON copy 2.ipynb",
+      "source_sha256": "ef27a0603af8e4e7cbe37121bf139cff47e159b30121ebc3e62a5ed1c1da59fe",
+      "published_path": "notebooks/exploratory/vn30_catboost.ipynb",
+      "published_sha256": "64154eec41a211b0635e36d3c88924c79059d4eae982c3d64678a409ade3997a",
+      "status": "exploratory; execution not revalidated"
+    },
+    {
+      "source_filename": "VN30_NeuralProphet.ipynb",
+      "source_sha256": "b3a52af03d79b4ba3cb3eec2108df4805910d8cb70cf7fc1dd2ae495cc73a0ed",
+      "published_path": "notebooks/exploratory/vn30_neuralprophet.ipynb",
+      "published_sha256": "a484bd8f01e41253ee283df600949318b8872d51022df91c788925340bc4d253",
+      "status": "exploratory; execution not revalidated"
+    },
+    {
+      "source_filename": "btc-low-anchor.ipynb",
+      "source_sha256": "1962495d0c7e01c32d7f5a325c63a963bce4ca0e1449c9d77b6273eeb2866819",
+      "published_path": "notebooks/exploratory/btc_recurrent_low.ipynb",
+      "published_sha256": "f2f409bda43caae7e16df74852d44cb339a9cb77c2713095b6d367f77d50179c",
+      "status": "exploratory; execution not revalidated"
+    },
+    {
+      "source_filename": "gold-close.ipynb",
+      "source_sha256": "54fb01f41d45f8b36f03131b959112e3f99ad893652b24d6543019767e4c258d",
+      "published_path": "notebooks/exploratory/gold_recurrent_close.ipynb",
+      "published_sha256": "304efffe2c741c54ff74aa53be71cd0fa694c0040b164bb3ddb858758debebe3",
+      "status": "exploratory; execution not revalidated"
+    },
+    {
+      "source_filename": "btc_features.py",
+      "source_sha256": "168fe45b7e53246b24aec47c1e8965fe84bed00472f7ddb870a575a6a90d564b",
+      "published_path": "notebooks/exploratory/btc_features.py",
+      "published_sha256": "d72292580a541978762a87d5830d6fc93ce987e3839c65883e5ca724149ef9c8",
+      "status": "historical helper; whitespace normalized, code unchanged; not used by benchmark"
+    }
+  ]
+}

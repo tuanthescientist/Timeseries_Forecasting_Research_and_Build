@@ -1,0 +1,5 @@
+# Tested dependency constraints for the small benchmark, Python 3.11/3.12.
+# Historical notebook environments are intentionally separate.
+numpy==2.2.6
+setuptools==80.9.0
+wheel==0.45.1

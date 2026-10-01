@@ -1,0 +1,14 @@
+cff-version: 1.2.0
+message: "If discussing this software, cite the repository and exact commit. Synthetic demo results are not evidence of market performance."
+title: "Time-Series Forecasting: Research & Build"
+type: software
+authors:
+  - family-names: Tran
+    given-names: Tuan
+repository-code: "https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build"
+version: 0.1.0
+keywords:
+  - time-series forecasting
+  - rolling-origin evaluation
+  - reproducible research
+  - financial time series
