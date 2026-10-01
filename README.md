@@ -26,7 +26,7 @@ state-of-the-art result, or trading profitability is claimed.
 | For reviewers | Evidence |
 | --- | --- |
 | Understand the research scope | [Research overview](docs/research_overview.md) |
-| Read the NTU PhD research proposal | [Research proposal — Tran Anh Tuan (Word)](docs/proposals/NTU_PhD_Research_Proposal_Tran_Anh_Tuan.docx) |
+| Read the PhD research proposal | [Research proposal — Tran Anh Tuan (Word)](docs/proposals/PhD_Research_Proposal_Tran_Anh_Tuan.docx) |
 | Inspect the evaluation design | [Protocol](docs/evaluation_protocol.md) and [implementation](src/tsresearch/benchmark.py) |
 | Reproduce a complete run | [Quick start below](#quick-start) and [demo results](results/demo/README.md) |
 | Explore earlier model development | [Notebook catalogue](notebooks/README.md) |
