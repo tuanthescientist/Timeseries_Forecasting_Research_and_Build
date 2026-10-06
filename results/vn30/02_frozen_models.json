@@ -1,0 +1,12 @@
+{
+  "rule": "mean over horizons of RMSE / RMSE(persistence), validation only",
+  "frozen": [
+    "drift",
+    "extra_trees(min_leaf=60)",
+    "gradient_boosting(max_depth=2)",
+    "naive",
+    "ridge(alpha=1000.0)"
+  ],
+  "best_learned": "extra_trees(min_leaf=60)",
+  "center": "naive"
+}

@@ -1,0 +1,2 @@
+name,source_file,sha256,rows,first_date,last_date,rows_with_ohlc,ohlc_inconsistent_rows,rows_with_volume,weekend_dated_rows,gaps_over_5_calendar_days,largest_gap_days,abs_log_return_over_threshold,extreme_move_threshold,reported_change_mismatch_rows
+BID,bid.csv,918ad01972453e616a6042da5a897c7137cf943105bb6286fb6dbc21ed7923d4,3153,2014-01-27,2026-09-24,3153,1,3153,0,20,11,0,0.1,1

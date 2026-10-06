@@ -1,19 +1,23 @@
 # Contributing
 
-Use a focused branch and explain the research question or bug addressed. Run:
+Use a focused branch and say which research question or defect it addresses.
 
 ```bash
+python -m pip install -c requirements-lock.txt -e ".[dev]"
+ruff check .
 python -m unittest discover -s tests -v
 python scripts/check_repository.py
-ts-benchmark --csv data/demo/synthetic_prices.csv --output results/local/check
+TSR_FORCE_DEMO=1 python scripts/run_notebooks.py   # optional: notebooks on synthetic data
 ```
 
-For a new model, document exactly which information is available at the origin,
-how hyperparameters are selected, the training/calibration periods, seeds, dependencies,
-and compute requirements. Compare against persistence using identical targets and origins.
-Retain per-origin predictions and report negative results.
+Rules that keep results comparable:
 
-Do not commit credentials, `.env`, raw provider datasets, model weights, execution
-outputs, or personal paths. Clear notebook outputs before committing. Supply upstream
-attribution and confirm reuse rights for imported code or data. Historical notebooks
-should remain labelled exploratory until their experiments are independently reproduced.
+* A new model implements the interface in `src/tsresearch/models.py` and is compared with
+  persistence on identical origins; hyper-parameters are chosen on the validation segment
+  only, and the test segment is run once with frozen choices.
+* State exactly what information is available at the forecast origin. Add a test that
+  forecasts do not change when data after the origin is altered.
+* Report negative results and keep per-origin predictions reproducible.
+* Never commit credentials, `.env`, raw provider data (`data/raw/` is ignored), model
+  weights, or personal paths. `scripts/check_repository.py` enforces part of this.
+* Confirm reuse rights for imported code or data and give attribution.

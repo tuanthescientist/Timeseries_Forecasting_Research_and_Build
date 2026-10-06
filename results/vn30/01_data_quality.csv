@@ -1,0 +1,2 @@
+name,source_file,sha256,rows,first_date,last_date,rows_with_ohlc,ohlc_inconsistent_rows,rows_with_volume,weekend_dated_rows,gaps_over_5_calendar_days,largest_gap_days,abs_log_return_over_threshold,extreme_move_threshold,reported_change_mismatch_rows
+VN30,vn30.csv,1b91f9f2d89a35e15478eac85ff6de6d227458b427ff0e2f27b04c9e8042136e,4426,2009-01-05,2026-09-28,4426,1,3567,4,26,11,0,0.1,3

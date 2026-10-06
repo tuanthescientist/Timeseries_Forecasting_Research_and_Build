@@ -1,0 +1,4 @@
+segment,first_origin,last_origin,origins
+train (fit only),2009-04-07,2017-12-29,2184
+validation,2018-01-02,2022-12-02,1230
+test,2023-01-03,2026-08-28,912

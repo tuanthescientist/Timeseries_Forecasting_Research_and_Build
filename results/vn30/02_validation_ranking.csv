@@ -1,0 +1,10 @@
+model,mean_rel_rmse,family
+naive,1,naive
+extra_trees(min_leaf=60),1.00196,extra_trees
+ridge(alpha=1000.0),1.00541,ridge
+extra_trees(min_leaf=20),1.00712,extra_trees
+ridge(alpha=100.0),1.01198,ridge
+gradient_boosting(max_depth=2),1.01369,gradient_boosting
+ridge(alpha=10.0),1.0166,ridge
+drift,1.02329,drift
+gradient_boosting(max_depth=3),1.02624,gradient_boosting

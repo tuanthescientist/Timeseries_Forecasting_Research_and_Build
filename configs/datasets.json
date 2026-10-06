@@ -1,0 +1,5 @@
+{
+  "VN30": {"file": "data/raw/vn30.csv", "description": "VN30 index, daily, export layout"},
+  "BID": {"file": "data/raw/bid.csv", "description": "BIDV (BID) stock, daily, export layout"},
+  "DEMO": {"file": "data/demo/synthetic_ohlcv.csv", "description": "Synthetic GARCH-style OHLCV"}
+}

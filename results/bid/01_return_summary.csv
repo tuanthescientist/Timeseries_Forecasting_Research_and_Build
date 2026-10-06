@@ -1,0 +1,3 @@
+period,n,mean_%,std_%,skew,excess_kurtosis,autocorr_lag1,autocorr_abs_lag1
+train (before validation),1226,0.0707799,2.35371,0.116969,1.71215,0.0318784,0.267492
+validation period,1001,0.0398958,2.27984,-0.357167,1.70112,-0.0076116,0.206087

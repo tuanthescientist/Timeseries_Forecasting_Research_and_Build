@@ -1,11 +1,11 @@
-name: Reproducibility checks
+name: CI
 on:
   push:
   pull_request:
 permissions:
   contents: read
 jobs:
-  benchmark:
+  checks:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -15,7 +15,21 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-      - run: python -m pip install -c requirements-lock.txt -e .
+          cache: pip
+      - run: python -m pip install -c requirements-lock.txt -e ".[dev]"
+      - run: ruff check .
       - run: python -m unittest discover -s tests -v
       - run: python scripts/check_repository.py
-      - run: ts-benchmark --csv data/demo/synthetic_prices.csv --output results/local/ci
+  notebooks:
+    name: notebooks run end to end (synthetic data)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - run: python -m pip install -c requirements-lock.txt -e ".[notebooks]"
+      - run: python scripts/run_notebooks.py
+        env:
+          TSR_FORCE_DEMO: '1'

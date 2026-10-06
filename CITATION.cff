@@ -1,14 +1,22 @@
 cff-version: 1.2.0
-message: "If discussing this software, cite the repository and exact commit. Synthetic demo results are not evidence of market performance."
+message: "If you use this software, please cite the repository and the exact commit."
 title: "Time-Series Forecasting: Research & Build"
 type: software
 authors:
   - family-names: Tran
     given-names: Tuan
 repository-code: "https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build"
-version: 0.1.0
+license: MIT
+version: 0.2.0
+date-released: 2026-10-07
+abstract: >-
+  A reproducible protocol for evaluating financial return forecasts against persistence
+  under explicit information constraints, with sequentially calibrated prediction
+  intervals (split and adaptive conformal). Results on VN30 and BID are reported,
+  including negative findings.
 keywords:
   - time-series forecasting
   - rolling-origin evaluation
-  - reproducible research
+  - conformal prediction
+  - uncertainty calibration
   - financial time series

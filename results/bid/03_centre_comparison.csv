@@ -1,0 +1,7 @@
+dataset,centre,horizon,nominal,coverage,mean_width,interval_score
+BID,extra_trees(min_leaf=20),1,0.8,0.801105,0.0397667,0.061648
+BID,extra_trees(min_leaf=20),1,0.95,0.950276,0.0739338,0.0994623
+BID,extra_trees(min_leaf=20),5,0.8,0.79779,0.0920321,0.140199
+BID,extra_trees(min_leaf=20),5,0.95,0.946961,0.1983,0.26393
+BID,extra_trees(min_leaf=20),20,0.8,0.794475,0.219815,0.323912
+BID,extra_trees(min_leaf=20),20,0.95,0.946961,0.641218,0.731027

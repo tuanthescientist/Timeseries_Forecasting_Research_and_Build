@@ -1,134 +1,131 @@
 # Time-Series Forecasting: Research & Build
 
-**An applied research portfolio on financial forecasting, with an auditable evaluation core.**
+**Do richer models beat "no change" for daily financial returns, and can their uncertainty be
+calibrated when volatility shifts?** A small, auditable study on the VN30 index and the BID
+stock, with every claim tied to a tested protocol and a committed notebook.
 
-Maintained by [Tuan Tran](https://github.com/tuanthescientist).
+Maintained by [Tuan Tran](https://github.com/tuanthescientist). MIT licensed.
+Earlier exploratory notebooks (Bitcoin, BNB, gold, NeuralProphet, Chronos, recurrent nets) are
+preserved, unvalidated, on the branch
+[`archive/v0.1-exploratory`](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/tree/archive/v0.1-exploratory)
+(tag `v0.1.0`).
 
-This project brings together exploratory work on Bitcoin, BNB, the VN30 equity index,
-and gold. It examines statistical forecasting, gradient boosting, recurrent neural
-networks, and pretrained time-series models. A small reproducible benchmark provides
-a common starting point for evaluating those ideas under explicit information constraints.
+## What to read
 
-**Current status:** the NumPy benchmark is runnable and tested; the historical notebooks
-are exploratory and have not been revalidated end to end. The published benchmark uses
-synthetic data to demonstrate the evaluation pipeline. No real-market performance,
-state-of-the-art result, or trading profitability is claimed.
+| Order | Notebook | Question | One-line answer on the committed run |
+| --- | --- | --- | --- |
+| 1 | [01 Data and baselines](notebooks/01_data_and_baselines.ipynb) | What are the data, the protocol and the baseline to beat? | Returns are almost unpredictable from their own past; volatility clusters; trailing drift does not beat persistence. |
+| 2 | [02 Model comparison](notebooks/02_model_comparison.ipynb) | Do ridge, extra-trees and gradient boosting beat persistence? | No, not significantly, on either series (Holm-adjusted p = 1 for all 24 comparisons). |
+| 3 | [03 Uncertainty calibration](notebooks/03_uncertainty_calibration.ipynb) | Do prediction intervals stay calibrated as volatility changes? | Adaptive conformal keeps coverage within ~0.01 of nominal; static calibration over-covers; conditional coverage by volatility regime is still imperfect. |
 
-## Research questions
+The notebooks are executed and their outputs are stored, so they can be read on GitHub without
+running anything. The protocol is in [`docs/protocol.md`](docs/protocol.md), the data card in
+[`docs/data.md`](docs/data.md).
 
-1. Can richer models improve on persistence and drift across forecast horizons?
-2. How sensitive are comparisons to forecast origin, regime changes, and target design?
-3. Which gains remain when feature construction, preprocessing, and calibration use only
-   information available when a forecast is issued?
+## Results at a glance
 
-## Start here
+Test segment 2023-01-03 to mid-2026 (912 origins for VN30, 905 for BID). Settings were chosen
+on a validation segment (2018-2022 for VN30, 2019-2022 for BID) and frozen before the test
+segment was run. All horizons count trading sessions.
 
-| For reviewers | Evidence |
-| --- | --- |
-| Understand the research scope | [Research overview](docs/research_overview.md) |
-| Read the PhD research proposal | [Research proposal — Tran Anh Tuan (Word)](docs/proposals/PhD_Research_Proposal_Tran_Anh_Tuan.docx) |
-| Inspect the evaluation design | [Protocol](docs/evaluation_protocol.md) and [implementation](src/tsresearch/benchmark.py) |
-| Reproduce a complete run | [Quick start below](#quick-start) and [demo results](results/demo/README.md) |
-| Explore earlier model development | [Notebook catalogue](notebooks/README.md) |
-| Check limitations and provenance | [Data card](data/README.md), [audit](docs/research_audit.md), and [source manifest](docs/source_manifest.json) |
+**Point forecasts: RMSE of the h-step log return divided by persistence (< 1 beats "no change")**
 
-## Quick start
+| Series | Model | h = 1 | h = 5 | h = 20 |
+| --- | --- | ---: | ---: | ---: |
+| VN30 | trailing drift | 1.0023 | 1.0111 | 1.0415 |
+| VN30 | ridge | 0.9976 | 0.9969 | 0.9718 |
+| VN30 | extra-trees | 0.9974 | 0.9989 | 0.9736 |
+| VN30 | gradient boosting | 0.9963 | 0.9965 | 1.0040 |
+| BID | trailing drift | 1.0019 | 1.0084 | 1.0310 |
+| BID | ridge | 0.9973 | 0.9897 | 0.9768 |
+| BID | extra-trees | 0.9982 | 1.0011 | 1.0065 |
+| BID | gradient boosting | 0.9961 | 1.0033 | 1.0155 |
 
-Use Python 3.11 or 3.12. Run these commands from the repository root:
+None of these differences is statistically distinguishable from zero (Diebold-Mariano with HAC
+variance, block bootstrap, Holm correction). The tentative 2-3% gain of ridge at h = 20 appears
+on both series and is a lead for more data, not a finding.
+
+**Interval coverage at h = 5 (target 80% / 95%)**
+
+| Method | VN30 80% | VN30 95% | BID 80% | BID 95% |
+| --- | ---: | ---: | ---: | ---: |
+| Gaussian, EWMA volatility | 0.802 | 0.929 | 0.824 | 0.938 |
+| Split conformal, static | 0.864 | 0.985 | 0.910 | 0.985 |
+| Split conformal, rolling, volatility-normalised | 0.808 | 0.957 | 0.807 | 0.943 |
+| Adaptive conformal (ACI), volatility-normalised | **0.799** | **0.948** | **0.798** | **0.947** |
+
+![Rolling coverage on the VN30 test segment](results/vn30/03_rolling_coverage.png)
+
+Full tables and figures for both series are in [`results/vn30/`](results/vn30) and
+[`results/bid/`](results/bid). Negative and mixed results are reported as found; for example,
+normalising residuals by trailing volatility reaches the right *average* coverage but
+under-covers calm periods (about 0.71-0.74 at the 80% level) and over-covers turbulent ones.
+
+## Reproduce
 
 ```bash
 git clone https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build.git
 cd Timeseries_Forecasting_Research_and_Build
-python -m venv .venv
+python -m venv .venv && source .venv/bin/activate        # Windows: .venv\Scripts\Activate.ps1
+python -m pip install -c requirements-lock.txt -e ".[dev]"
+python -m unittest discover -s tests -v                    # integrity tests
+python scripts/run_notebooks.py                            # run all three notebooks
 ```
 
-Activate the environment:
+Python 3.11 or 3.12. Without the market files the notebooks fall back to a **synthetic
+series** and print a notice; their numbers then differ from the committed ones. To reproduce the
+committed results, place the two files described in [`docs/data.md`](docs/data.md) at
+`data/raw/vn30.csv` and `data/raw/bid.csv` (not redistributed; hashes are recorded).
+`python scripts/run_notebooks.py --save` writes new outputs into the notebooks and results
+into `results/<dataset>/`.
 
-```powershell
-# Windows PowerShell
-.venv\Scripts\Activate.ps1
+## Integrity checks that are tested
+
+* Forecasts and features at an origin do not change when every later observation is altered.
+* A model fitted at origin `o` sees only rows whose longest label is observed by `o`.
+* Validation targets end before the test segment starts (embargo of `max(h)` rows).
+* Interval calibration uses an outcome only after it is realised (`origin + h <= now`).
+* Metrics, Diebold-Mariano size under overlapping errors, block bootstrap, Holm correction,
+  and conformal coverage (including recovery after a variance shift) have unit tests.
+
+## Layout
+
+```
+notebooks/   01 data and baselines · 02 model comparison · 03 uncertainty calibration
+src/tsresearch/
+  data.py  features.py  protocol.py  models.py  backtest.py  selection.py
+  metrics.py  conformal.py  uncertainty.py  workspace.py
+configs/     fixed protocol dates and dataset locations
+tests/       temporal-integrity, metric and conformal tests
+docs/        protocol, data card, research proposal (docx)
+results/     tables and figures from the committed real-data run
+data/        synthetic demo series; data/raw/ is git-ignored
+scripts/     run_notebooks.py, check_repository.py, make_demo_ohlcv.py
 ```
 
-```bash
-# macOS / Linux
-source .venv/bin/activate
-```
+## Scope and limits
 
-Install and run:
+* Two Vietnamese series, one feature family, one test period per series (about 3.7 years) and
+  overlapping multi-day targets. The study says nothing about other markets, intraday data or
+  market efficiency, and does not evaluate trading profitability or costs.
+* The selection rule and dates were fixed before running these models, but the same market
+  history had been looked at in earlier informal experiments, so the test segment is not a
+  pristine, never-seen sample.
+* Provider, retrieval date and terms of the two market files are not recorded in the files;
+  the VN30 file has four weekend-dated rows (see [`docs/data.md`](docs/data.md)).
+* The adaptive conformal update with delayed feedback is a heuristic; the coverage guarantees
+  of the original algorithm are not claimed.
 
-```bash
-python -m pip install -c requirements-lock.txt -e .
-python -m unittest discover -s tests -v
-python scripts/check_repository.py
-ts-benchmark --csv data/demo/synthetic_prices.csv --output results/local/demo
-```
+## Where this is going
 
-Each run produces `predictions.csv`, `metrics.csv`, and `run.json` with input and code
-hashes, package versions, and evaluation parameters. Compare your metrics with the
-[committed demo](results/demo/metrics.csv); allow normal floating-point differences
-across platforms. `python scripts/make_demo_data.py` regenerates the synthetic input.
+This repository is the evaluation and uncertainty foundation for a proposed research programme
+on reliable forecasting with evidence-grounded decision support
+([proposal](docs/proposals/PhD_Research_Proposal_Tran_Anh_Tuan.docx)). Planned next steps:
+a volatility-scale function that yields better *conditional* coverage; more assets and
+regimes, including cryptocurrency; the neural and pretrained models of the archive
+(NeuralProphet, recurrent networks, Chronos) under the same protocol; and, much later, the
+evidence-verified reporting layer described in the proposal. None of those is implemented here.
 
-### Evaluate your own series
+## Citation
 
-Place a CSV in `data/raw/`, which is ignored by Git. Supply `ds` (ISO date) and `y`
-(strictly positive price), sorted by date with no duplicates. Additional columns are
-ignored by the benchmark. Dates are validated; missing sessions are not imputed.
-
-```bash
-ts-benchmark --csv data/raw/my_series.csv --horizons 1 7 30 --folds 12 --step 7 --output results/local/my_series
-```
-
-The default settings need at least 248 observations. Horizons count **observations**:
-30 equity trading sessions and 30 cryptocurrency daily bars represent different periods.
-The forecast origin is after the current observation is known; predicting today's low
-before today's session closes is a different task.
-
-## What is implemented
-
-| Component | Scope | Status |
-| --- | --- | --- |
-| Persistence and drift | Reference forecasts at each origin | Tested benchmark |
-| Ridge on log returns | Direct horizons; lagged returns and volatility; training-only scaling | Tested benchmark |
-| MAE, RMSE, MAPE | Per model and horizon; per-origin predictions retained | Tested benchmark |
-| LightGBM / CatBoost | Financial feature and target experiments | Historical notebooks |
-| NeuralProphet / AutoARIMA | Decomposable and statistical forecasts | Historical notebooks |
-| Recurrent networks | Bitcoin and gold experiments | Historical notebooks |
-| Chronos | Pretrained model exploration on Bitcoin | Historical notebook |
-
-Notebook libraries require separate environments. The lightweight installation above
-supports the benchmark only; it does not install TensorFlow, PyTorch, or notebook models.
-
-## Repository map
-
-```text
-src/tsresearch/          Reusable evaluation core and CLI
-tests/                  Temporal integrity, input, and metric checks
-notebooks/exploratory/   Selected historical notebooks, cleared outputs
-data/demo/              Deterministic synthetic input
-data/raw/               Ignored local market data
-results/demo/           Reproducible synthetic benchmark artifacts
-docs/                   Research scope, protocol, provenance, limitations
-scripts/                Synthetic data generator and repository checks
-.github/workflows/      Automated core checks on Python 3.11 and 3.12
-```
-
-## Next research milestones
-
-- Establish dated market-data snapshots with documented source and usage rights.
-- Port selected notebook models into the same evaluation protocol.
-- Separate model selection, calibration, and final evaluation periods.
-- Extend evaluation across assets and regimes, reporting failed experiments as well as gains.
-- Investigate uncertainty calibration and regime robustness once a reliable comparison exists.
-
-These are planned directions, not completed findings. See the
-[research overview](docs/research_overview.md) for the proposed experimental sequence.
-
-## Attribution and reuse
-
-The source manifest identifies the local notebook versions used in this portfolio.
-Model families and third-party libraries are existing methods; their use here is not a
-claim of inventing them. Upstream provenance for historical notebook code is incomplete.
-No blanket open-source license is granted in this initial release; see
-[attribution and reuse](docs/attribution.md). Market data and model weights are not bundled.
-
-For a research discussion, refer to an exact commit and the relevant protocol or notebook.
+See [`CITATION.cff`](CITATION.cff). Please cite the repository together with the exact commit.
