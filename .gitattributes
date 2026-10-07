@@ -1,3 +1,6 @@
 * text=auto eol=lf
 *.ipynb text eol=lf
 *.csv text eol=lf
+# Preserve the published market snapshots byte-for-byte for SHA-256 verification.
+data/raw/vn30.csv -text
+data/raw/bid.csv -text

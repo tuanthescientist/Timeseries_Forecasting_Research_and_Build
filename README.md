@@ -43,11 +43,11 @@ Open the saved notebooks on GitHub without installing anything. To rerun, use a 
 
 | Notebook | Setup and data |
 | --- | --- |
-| NeuralProphet | Run the installation cell once, restart the kernel, then skip installation. It pins NeuralProphet 0.8.0. Supply the original Date/Price CSV at data/raw/vn30.csv or set VN30_CSV; the Kaggle path is a fallback. |
+| NeuralProphet | Run the installation cell once, restart the kernel, then skip installation. It pins NeuralProphet 0.8.0. The bundled data/raw/vn30.csv is the newer 4,426-row snapshot. Set VN30_CSV for another snapshot; the Kaggle path is a fallback. |
 | TensorFlow | Saved run: TensorFlow 2.19.0. Install tensorflow==2.19.0, numpy, pandas, scikit-learn, matplotlib, Pillow, tqdm, yfinance and pandas-datareader. The setup cell installs TensorFlow if missing. Yahoo Finance download requires internet and uses the current date; rerun scores can change. |
-| scikit-learn | Run setup once and restart if necessary. It pins scikit-learn 1.8.0. Supply the original OHLCV CSV at data/raw/bid.csv or set BID_CSV; the Kaggle path is a fallback. Exports go to ignored results/local/bid-extratrees/. |
+| scikit-learn | Run setup once and restart if necessary. It pins scikit-learn 1.8.0. The bundled data/raw/bid.csv matches the original snapshot. Set BID_CSV for another file; the Kaggle path is a fallback. Exports go to ignored results/local/bid-extratrees/. |
 
-The author confirms that VN30 and BID CSVs were downloaded from Investing.com: [VN30 history](https://www.investing.com/indices/vn-30-historical-data) and [BID history](https://www.investing.com/equities/commercial-bank-investment-develop-historical-data). **Neither supplied raw CSV is tracked on GitHub main as of 8 October 2026.** Market CSVs and model weights are not bundled. The BID publication copy reads an external CSV instead of the embedded raw-data payload in the source notebook. Read [data provenance and snapshot limits](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/docs/data.md) before trying to reproduce the exact saved values. Primary models have not been retrained in CI.
+The author confirms that VN30 and BID CSVs were downloaded from Investing.com: [VN30 history](https://www.investing.com/indices/vn-30-historical-data) and [BID history](https://www.investing.com/equities/commercial-bank-investment-develop-historical-data). **Both supplied CSV snapshots are published:** [VN30 CSV](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/data/raw/vn30.csv) and [BID CSV](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/data/raw/bid.csv). The VN30 file is newer than the snapshot behind the saved NeuralProphet metrics. Model weights are not bundled. The BID publication copy reads an external CSV instead of the embedded raw-data payload in the source notebook. Read [data provenance and snapshot limits](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/docs/data.md) before trying to reproduce the exact saved values. Primary models have not been retrained in CI.
 
 ## Repository layout
 
@@ -67,7 +67,8 @@ docs/
 src/tsresearch/, configs/, tests/     infrastructure for the supplementary study
 results/vn30/, results/bid/           supplementary study tables and figures
 data/demo/                           synthetic input for supplementary smoke runs
-data/raw/, results/local/            ignored local data and generated outputs
+data/raw/                           published vn30.csv and bid.csv snapshots
+results/local/                      ignored generated outputs
 scripts/                             repository checks and supplementary runner
 ```
 
