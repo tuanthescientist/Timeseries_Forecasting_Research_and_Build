@@ -1,35 +1,58 @@
 # Data for the three primary projects
 
-Raw market CSVs, downloaded histories and model weights are not distributed in this repository. Saved notebook outputs include illustrative historical rows and figures. Data rights, adjustment policy and source provenance need completion before claiming full reproducibility.
+The author confirmed on 7 October 2026 that the supplied VN30 and BID CSVs were downloaded from **Investing.com**. The provider pages identify the instruments; this attribution does not establish retrieval time, adjustments, redistribution permission or byte-for-byte correspondence with current live pages.
 
-| Project | Saved snapshot evidence | How to supply data |
+## GitHub availability
+
+**Neither supplied raw CSV is tracked on main as of 8 October 2026.** The repository contains synthetic demo data and derived supplementary results. Raw files under data/raw/ are ignored by Git. Saved notebook outputs contain illustrative rows and plots.
+
+| Supplied file | Source page | Rows and date range | Relation to saved experiments |
+| --- | --- | --- | --- |
+| VN_30_Historical_Data_Price_numeric_date_fixed.csv | [Investing.com VN30 history](https://www.investing.com/indices/vn-30-historical-data) | 4,426; 2009-01-05–2026-09-28 | Supplementary snapshot; newer than the 4,408-row NeuralProphet run |
+| Bank for Investment and Development Stock Price History.csv | [Investing.com BID history](https://www.investing.com/equities/commercial-bank-investment-develop-historical-data) | 3,153; 2014-01-27–2026-09-24 | Matches bytes embedded in the original BID notebook |
+
+Source confirmation is the author's acquisition statement. The VN30 filename indicates numeric/date processing; it should not be described as an untouched export. Original download time and a complete transformation log are not archived.
+
+## Snapshot identity
+
+**VN30 SHA-256**
+
+    1b91f9f2d89a35e15478eac85ff6de6d227458b427ff0e2f27b04c9e8042136e
+
+**BID SHA-256**
+
+    918ad01972453e616a6042da5a897c7137cf943105bb6286fb6dbc21ed7923d4
+
+The BID hash matches the original notebook's embedded compressed CSV. The public notebook reads an external file. A hash for the exact 4,408-row VN30 snapshot is unavailable; substituting the newer file creates a new experiment rather than reproducing the original score.
+
+| Project | Saved snapshot evidence | Input route |
 | --- | --- | --- |
-| VN30 / NeuralProphet | 4,408 cleaned source rows; 2009-01-05–2026-09-04; then 4,610 weekday rows with filled gaps | Original Date/Price CSV at data/raw/vn30.csv or environment variable VN30_CSV. Kaggle dataset path is a fallback. |
-| BTC Low / TensorFlow | Yahoo Finance BTC-USD daily OHLCV; 4,397 raw rows through 2026-09-30; 4,368 rows after features | Live yfinance download beginning 2014-08-01 and ending at the current date. An exact archived download/hash is not available in the repository. |
-| BID / scikit-learn | 3,153 rows; 2014-01-27–2026-09-24; original-byte SHA-256 below | Original OHLCV export at data/raw/bid.csv or environment variable BID_CSV. Kaggle dataset path is a fallback. |
+| VN30 / NeuralProphet | 4,408 cleaned rows through 2026-09-04; reindexed to 4,610 weekday rows | Date/Price CSV at data/raw/vn30.csv or VN30_CSV; Kaggle path fallback |
+| BTC Low / TensorFlow | Yahoo Finance BTC-USD; 4,397 raw daily rows through 2026-09-30; 4,368 feature-complete rows | Live yfinance download; original bytes/hash not archived |
+| BID / scikit-learn | 3,153 rows through 2026-09-24; hash above | OHLCV CSV at data/raw/bid.csv or BID_CSV; Kaggle path fallback |
 
-BID original-byte SHA-256:
+Kaggle paths describe notebook hosting/input paths, not original vendor attribution. A live download or a different snapshot can change metrics.
 
-```text
-918ad01972453e616a6042da5a897c7137cf943105bb6286fb6dbc21ed7923d4
-```
+## Input formats and calendar issues
 
-This hash was verified from the source notebook's embedded compressed CSV. The publication copy removes that raw-data payload and reads an externally supplied CSV; the modeling calculations are unchanged. The source notebook in the user's workspace is preserved.
+**NeuralProphet.** Date uses month/day/year; Price is numeric or contains thousands separators. Invalid rows are removed, dates sorted and final duplicates retained. Weekday reindexing and filling include exchange holidays, so steps are not necessarily exchange sessions.
 
-## Input formats
+**TensorFlow.** Yahoo Finance daily Open/High/Low/Close/Volume; Low is the target. FRED CBBTCUSD is renamed Low by the fallback but differs from Yahoo daily low and must be identified as another task.
 
-**NeuralProphet.** Date in month/day/year format and Price as a numeric value or a string with thousands separators. The loader keeps positive, parseable prices, drops invalid rows, sorts dates and keeps the final duplicate. It then uses frequency B and forward/backward filling. A weekday grid includes exchange holidays; it is not an exchange session calendar.
+**ExtraTrees.** Date, Price, Open, High, Low and Vol. use month/day/year dates and K/M/B volume suffixes. Invalid/duplicate dates and non-positive closes are rejected. Missing sessions are not filled. OHLC inconsistencies and a missing September 2026 date require reconciliation.
 
-**TensorFlow.** Yahoo Finance Open/High/Low/Close/Volume with a daily timestamp index. Low is the target. The fallback FRED series CBBTCUSD is renamed Low by the notebook but represents a different observation, not Yahoo daily low; results from that fallback must be identified as a different task. The download is not frozen and can be revised by the source.
-
-**ExtraTrees.** Date, Price, Open, High, Low and Vol. with month/day/year dates, thousands separators and K/M/B volume suffixes. Duplicate or invalid dates and non-positive closing prices are rejected. Missing sessions are not filled. The notebook flags OHLC inconsistencies and a missing September 2026 date; check them against a documented provider before using the result as final research evidence.
+The newer VN30 file contains weekend labels at 2026-07-04, 2026-07-05, 2026-09-26 and 2026-09-27. Their calendar positions require provider/exchange reconciliation. Current provider pages are not immutable copies of these files.
 
 ## Provenance still to complete
 
-The VN30 and BID notebook paths identify a Kaggle-hosted dataset, not an original financial vendor or redistribution licence. Their original provider, retrieval record, price adjustment policy and redistribution rights are not verified. A hash of the exact 4,408-row VN30 snapshot is not available; the newer local file should not be substituted silently for it. For Bitcoin, the code names Yahoo Finance via yfinance, but the exact saved download bytes and data-use terms are not archived here.
+| Field | Current evidence |
+| --- | --- |
+| VN30/BID provider | Investing.com, author-confirmed; source pages above |
+| Retrieval timestamp | Not recorded |
+| Adjustment and revision policy | Not recorded for these exports |
+| Transformation log | Incomplete, including VN30 date processing |
+| Calendar and time zone | Require reconciliation |
+| Raw-data redistribution permission | Not recorded |
+| Original BTC and NeuralProphet snapshot bytes | Not archived |
 
-The code's MIT licence does not grant rights to third-party market data. Local raw files are ignored by Git. Reproducing with a different snapshot is a new run and should be documented with a date, hash and updated scores.
-
-## Separate supplementary snapshots
-
-The supplemental VN30 benchmark uses **4,426** source rows through 28 September 2026, which differs from the NeuralProphet run. Its BID file matches the hash above but its forecasting protocol differs from the primary ExtraTrees project. Details and known issues are in the [supplementary data card](supplementary/data.md). The synthetic OHLCV file under data/demo/ supports only supplementary execution.
+The code's MIT licence does not establish rights over vendor data. Reproducible research needs acquisition records, transformations, calendar checks and frozen snapshots. See the [supplementary data card](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/docs/supplementary/data.md), [evaluation designs](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/docs/evaluation.md) and [saved primary metrics](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/docs/preliminary_results.md).

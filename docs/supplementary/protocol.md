@@ -3,8 +3,8 @@
 # Evaluation protocol
 
 This is the single protocol used by all three notebooks. It is implemented in
-[`src/tsresearch/`](../../src/tsresearch) and its integrity properties are unit-tested.
-The dates below were fixed in [`configs/protocol.json`](../../configs/protocol.json) before
+[`src/tsresearch/`](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/tree/main/src/tsresearch) and its integrity properties are unit-tested.
+The dates below were fixed in [`configs/protocol.json`](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/configs/protocol.json) before
 any model in this repository was run.
 
 ## Forecast target and information set

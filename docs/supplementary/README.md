@@ -1,14 +1,14 @@
 # Supplementary evaluation study
 
-The primary portfolio is the three original [NeuralProphet](../../notebooks/vn30-forecast-neuralprophet.ipynb), [TensorFlow](../../notebooks/btc-low-forecast-tensorflow.ipynb) and [scikit-learn](../../notebooks/stock-forecast-sklearn.ipynb) notebooks. The numbered study below was added during repository restructuring in commit 7da3eb8; it is not a renamed or derived copy of those three projects.
+The primary portfolio is the three original [NeuralProphet](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/notebooks/vn30-forecast-neuralprophet.ipynb), [TensorFlow](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/notebooks/btc-low-forecast-tensorflow.ipynb) and [scikit-learn](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/notebooks/stock-forecast-sklearn.ipynb) notebooks. The numbered study below was added during repository restructuring in commit 7da3eb8; it is not a renamed or derived copy of those three projects.
 
 | Notebook | Supplementary purpose |
 | --- | --- |
-| [01 Data and baselines](../../notebooks/supplementary/01_data_and_baselines.ipynb) | Data checks, temporal protocol and persistence/drift baselines |
-| [02 Model comparison](../../notebooks/supplementary/02_model_comparison.ipynb) | Return forecasts from ridge, ExtraTrees and gradient boosting |
-| [03 Uncertainty calibration](../../notebooks/supplementary/03_uncertainty_calibration.ipynb) | Static, rolling and adaptive interval-calibration experiments |
+| [01 Data and baselines](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/notebooks/supplementary/01_data_and_baselines.ipynb) | Data checks, temporal protocol and persistence/drift baselines |
+| [02 Model comparison](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/notebooks/supplementary/02_model_comparison.ipynb) | Return forecasts from ridge, ExtraTrees and gradient boosting |
+| [03 Uncertainty calibration](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/notebooks/supplementary/03_uncertainty_calibration.ipynb) | Static, rolling and adaptive interval-calibration experiments |
 
-[Protocol](protocol.md), [data card](data.md) and [saved aggregate results](preliminary_results.md) describe only this study. Its code is in [src/tsresearch](../../src/tsresearch), dates and paths are in [configs](../../configs), and derived outputs are in [results/vn30](../../results/vn30) and [results/bid](../../results/bid). Keep these results separate from the original projects' scores.
+[Protocol](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/docs/supplementary/protocol.md), [data card](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/docs/supplementary/data.md) and [saved aggregate results](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/docs/supplementary/preliminary_results.md) describe only this study. Its code is in [src/tsresearch](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/tree/main/src/tsresearch), dates and paths are in [configs](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/tree/main/configs), and derived outputs are in [results/vn30](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/tree/main/results/vn30) and [results/bid](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/tree/main/results/bid). Keep these results separate from the original projects' scores.
 
 ## Execution
 
