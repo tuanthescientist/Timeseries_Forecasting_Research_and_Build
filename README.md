@@ -20,7 +20,10 @@ preserved, unvalidated, on the branch
 
 The notebooks are executed and their outputs are stored, so they can be read on GitHub without
 running anything. The protocol is in [`docs/protocol.md`](docs/protocol.md), the data card in
-[`docs/data.md`](docs/data.md).
+[`docs/data.md`](docs/data.md), and the same numbers in application form are in
+[`docs/preliminary_results.md`](docs/preliminary_results.md). The doctoral proposal that uses
+this run is [`docs/proposals/PhD_Research_Proposal.md`](docs/proposals/PhD_Research_Proposal.md)
+([Word copy](docs/proposals/PhD_Research_Proposal_Tran_Anh_Tuan.docx)).
 
 ## Results at a glance
 
@@ -97,7 +100,7 @@ src/tsresearch/
   metrics.py  conformal.py  uncertainty.py  workspace.py
 configs/     fixed protocol dates and dataset locations
 tests/       temporal-integrity, metric and conformal tests
-docs/        protocol, data card, research proposal (docx)
+docs/        protocol, data card, preliminary results, research proposal
 results/     tables and figures from the committed real-data run
 data/        synthetic demo series; data/raw/ is git-ignored
 scripts/     run_notebooks.py, check_repository.py, make_demo_ohlcv.py
@@ -118,13 +121,13 @@ scripts/     run_notebooks.py, check_repository.py, make_demo_ohlcv.py
 
 ## Where this is going
 
-This repository is the evaluation and uncertainty foundation for a proposed research programme
-on reliable forecasting with evidence-grounded decision support
-([proposal](docs/proposals/PhD_Research_Proposal_Tran_Anh_Tuan.docx)). Planned next steps:
-a volatility-scale function that yields better *conditional* coverage; more assets and
-regimes, including cryptocurrency; the neural and pretrained models of the archive
-(NeuralProphet, recurrent networks, Chronos) under the same protocol; and, much later, the
-evidence-verified reporting layer described in the proposal. None of those is implemented here.
+This repository is the evaluation core for a doctoral proposal with two questions: conditional
+coverage of prediction intervals when volatility regimes change, and, only after that, an
+evidence-checked report that cannot state a number the packet does not contain
+([proposal](docs/proposals/PhD_Research_Proposal.md)). The next experiment is a volatility
+scale aimed at the conditional-coverage failure already measured here. Further assets, the
+archived neural models, and the report layer are later. None of those extensions is
+implemented in this commit.
 
 ## Citation
 

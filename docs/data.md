@@ -21,10 +21,28 @@ the synthetic series and says so in its first output.
 | BID | BIDV stock, daily | 3,153 | 2014-01-27 | 2026-09-24 | `918ad01972453e616a6042da5a897c7137cf943105bb6286fb6dbc21ed7923d4` |
 
 The hashes are of the files as supplied (VN30: `VN_30_Historical_Data_Price_numeric_date_fixed.csv`;
-BID: `Bank for Investment and Development Stock Price History.csv`). The provider, retrieval
-date and terms of use are **not recorded in the files** and must be confirmed by the author
-before any redistribution or publication that depends on them. Prices are as supplied; the
-adjustment policy for BID (splits, dividends) is likewise undocumented.
+BID: `Bank for Investment and Development Stock Price History.csv`). Prices are as supplied.
+Nothing in either file records who published it.
+
+## Provenance: what is known, and what must not be invented
+
+The export layout (`Date`, `Price`, `Open`, `High`, `Low`, `Vol.`, `Change %`) is a common
+download format. That is not evidence of a particular vendor. The fields below are blank on
+purpose. Fill them from the download record before naming a source in an application, a paper,
+or a slide. Do not guess.
+
+| Field | VN30 | BID |
+| --- | --- | --- |
+| Provider and source URL | not recorded | not recorded |
+| Retrieval date | not recorded | not recorded |
+| Adjustment (splits, dividends, index methodology) | not recorded | not recorded |
+| Time zone and session calendar | not recorded; weekends should be closed | not recorded; weekends should be closed |
+| Licence / permission to redistribute | not recorded; file is not in this repository | not recorded; file is not in this repository |
+
+**Safe to cite now:** row counts, first and last dates, and SHA-256 of the files as supplied;
+the metric tables in [`results/vn30/`](../results/vn30) and [`results/bid/`](../results/bid);
+the statement that the provider is undocumented. **Not safe to cite:** a vendor name, a claim
+that prices are split-adjusted, or the calendar date of any weekend-dated VN30 row.
 
 ## File layout accepted
 
@@ -35,11 +53,13 @@ nothing is imputed.
 
 ## Known data issues (reported by notebook 01)
 
-* **VN30 has four rows dated on a weekend** (2026-07-04, 2026-07-05, 2026-09-26, 2026-09-27)
-  although the market is closed on weekends: a date artefact in the supplied file
-  (the file name says the dates were "fixed"). Row order is used for all returns and
-  horizons, so ordering is unaffected, but the calendar position of those sessions is
-  uncertain. All of them fall in the test segment.
+* **VN30 has four rows dated Saturday or Sunday** (2026-07-04, 2026-07-05, 2026-09-26,
+  2026-09-27). The cash equity market does not trade on weekends, so these stamps disagree
+  with the session calendar. They are a date artefact in the supplied file (the file name says
+  the dates were "fixed"). Returns and horizons use row order, not the weekday label, so the
+  forecast arithmetic is unchanged, but the calendar position of those four sessions is
+  unknown. All four sit in the test segment. Until each row is matched to the exchange
+  calendar, do not describe it as a session on that calendar date.
 * One row per file has inconsistent open/high/low/close values. Such rows are masked in
   OHLC-derived features; the close is used as supplied.
 * Some sessions are absent (gaps over five calendar days, counted in the quality table).
