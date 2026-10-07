@@ -4,12 +4,12 @@ The author confirmed on 7 October 2026 that the supplied VN30 and BID CSVs were 
 
 ## GitHub availability
 
-**Neither supplied raw CSV is tracked on main as of 8 October 2026.** The repository contains synthetic demo data and derived supplementary results. Raw files under data/raw/ are ignored by Git. Saved notebook outputs contain illustrative rows and plots.
+**Both supplied CSVs are published on main as of 8 October 2026:** [VN30 CSV](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/data/raw/vn30.csv) and [BID CSV](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/data/raw/bid.csv). They are stored under the names expected by the notebook loaders and dataset configuration. Their contents are unchanged from the supplied files. Other raw files remain ignored. Synthetic demo data and derived supplementary results are also retained.
 
 | Supplied file | Source page | Rows and date range | Relation to saved experiments |
 | --- | --- | --- | --- |
-| VN_30_Historical_Data_Price_numeric_date_fixed.csv | [Investing.com VN30 history](https://www.investing.com/indices/vn-30-historical-data) | 4,426; 2009-01-05–2026-09-28 | Supplementary snapshot; newer than the 4,408-row NeuralProphet run |
-| Bank for Investment and Development Stock Price History.csv | [Investing.com BID history](https://www.investing.com/equities/commercial-bank-investment-develop-historical-data) | 3,153; 2014-01-27–2026-09-24 | Matches bytes embedded in the original BID notebook |
+| [VN_30_Historical_Data_Price_numeric_date_fixed.csv](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/data/raw/vn30.csv) | [Investing.com VN30 history](https://www.investing.com/indices/vn-30-historical-data) | 4,426; 2009-01-05–2026-09-28 | Supplementary snapshot; newer than the 4,408-row NeuralProphet run |
+| [Bank for Investment and Development Stock Price History.csv](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/data/raw/bid.csv) | [Investing.com BID history](https://www.investing.com/equities/commercial-bank-investment-develop-historical-data) | 3,153; 2014-01-27–2026-09-24 | Matches bytes embedded in the original BID notebook |
 
 Source confirmation is the author's acquisition statement. The VN30 filename indicates numeric/date processing; it should not be described as an untouched export. Original download time and a complete transformation log are not archived.
 

@@ -18,6 +18,6 @@ python -m unittest discover -s tests -v
 python scripts/run_notebooks.py
 ```
 
-The runner executes only the numbered supplementary notebooks by default. Without real CSVs it uses synthetic data and announces demo mode. Set TSR_FORCE_DEMO=1 to force that mode; use --save only when intentionally replacing saved outputs. NeuralProphet and TensorFlow are not dependencies of this package.
+The runner executes only the numbered supplementary notebooks by default. The bundled VN30 and BID CSVs match the default configured paths. If they are absent, it uses synthetic data and announces demo mode. Set TSR_FORCE_DEMO=1 to force that mode; use --save only when intentionally replacing saved outputs. NeuralProphet and TensorFlow are not dependencies of this package.
 
 These materials are optional exploratory infrastructure. They are not evidence that the original three models share this protocol or pass its temporal-integrity tests. Previously inspected histories and source-data issues remain documented. Numerical calibration conventions also require review before making a finite-sample conformal guarantee; the current quantile helper interpolates a corrected probability with the higher method rather than directly selecting the intended order statistic. Saved interval tables should be treated as exploratory and regenerated after such an audit.
