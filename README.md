@@ -4,6 +4,9 @@
 calibrated when volatility shifts?** A small, auditable study on the VN30 index and the BID
 stock, with every claim tied to a tested protocol and a committed notebook.
 
+The repository also includes a [VN30 NeuralProphet experiment](notebooks/vn30-forecast-neuralprophet.ipynb)
+with direct 30-step price forecasts, continuity anchoring and smoothing.
+
 Maintained by [Tuan Tran](https://github.com/tuanthescientist). MIT licensed.
 Earlier exploratory notebooks (Bitcoin, BNB, gold, NeuralProphet, Chronos, recurrent nets) are
 preserved, unvalidated, on the branch
@@ -17,6 +20,7 @@ preserved, unvalidated, on the branch
 | 1 | [01 Data and baselines](notebooks/01_data_and_baselines.ipynb) | What are the data, the protocol and the baseline to beat? | Returns are almost unpredictable from their own past; volatility clusters; trailing drift does not beat persistence. |
 | 2 | [02 Model comparison](notebooks/02_model_comparison.ipynb) | Do ridge, extra-trees and gradient boosting beat persistence? | No, not significantly, on either series (Holm-adjusted p = 1 for all 24 comparisons). |
 | 3 | [03 Uncertainty calibration](notebooks/03_uncertainty_calibration.ipynb) | Do prediction intervals stay calibrated as volatility changes? | Adaptive conformal keeps coverage within ~0.01 of nominal; static calibration over-covers; conditional coverage by volatility regime is still imperfect. |
+| 4 | [VN30 NeuralProphet](notebooks/vn30-forecast-neuralprophet.ipynb) | How do raw 30-step price forecasts compare with anchored and smoothed paths? | Saved forecasts and plots demonstrate the workflow; smoothing is tuned on the reported backtest segment. |
 
 The notebooks are executed and their outputs are stored, so they can be read on GitHub without
 running anything. The protocol is in [`docs/protocol.md`](docs/protocol.md), the data card in
@@ -24,6 +28,12 @@ running anything. The protocol is in [`docs/protocol.md`](docs/protocol.md), the
 [`docs/preliminary_results.md`](docs/preliminary_results.md). The doctoral proposal that uses
 this run is [`docs/proposals/PhD_Research_Proposal.md`](docs/proposals/PhD_Research_Proposal.md)
 ([Word copy](docs/proposals/PhD_Research_Proposal_Tran_Anh_Tuan.docx)).
+
+The NeuralProphet notebook is an additional price-forecasting experiment with its own data
+snapshot and evaluation design. Its smoothing parameters are selected on the same final
+30-row segment used to report error, so the smoothed metrics are tuning results. Its weekday
+calendar (`B`) includes filled holiday gaps. These outputs are not part of the controlled
+return-forecast benchmark below.
 
 ## Results at a glance
 
@@ -82,6 +92,13 @@ committed results, place the two files described in [`docs/data.md`](docs/data.m
 `python scripts/run_notebooks.py --save` writes new outputs into the notebooks and results
 into `results/<dataset>/`.
 
+For the [NeuralProphet notebook](notebooks/vn30-forecast-neuralprophet.ipynb), use a separate
+environment, run its installation cell once, restart the kernel, then skip that cell while
+running the rest. Provide the original `Date,Price` CSV at `data/raw/vn30.csv` or set `VN30_CSV`
+to its path; the original Kaggle path is also supported. Saved output reports NeuralProphet
+0.8.0, and the installation cell pins that version. The default notebook runner and synthetic
+CI run cover notebooks 01–03; the NeuralProphet experiment is run manually with market data.
+
 ## Integrity checks that are tested
 
 * Forecasts and features at an origin do not change when every later observation is altered.
@@ -95,6 +112,7 @@ into `results/<dataset>/`.
 
 ```
 notebooks/   01 data and baselines · 02 model comparison · 03 uncertainty calibration
+             vn30-forecast-neuralprophet.ipynb (additional NeuralProphet experiment)
 src/tsresearch/
   data.py  features.py  protocol.py  models.py  backtest.py  selection.py
   metrics.py  conformal.py  uncertainty.py  workspace.py
