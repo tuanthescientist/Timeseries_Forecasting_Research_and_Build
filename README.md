@@ -1,152 +1,79 @@
-# Time-Series Forecasting: Research & Build
+# Financial Time-Series Forecasting: Three Notebook Projects
 
-**Do richer models beat "no change" for daily financial returns, and can their uncertainty be
-calibrated when volatility shifts?** A small, auditable study on the VN30 index and the BID
-stock, with every claim tied to a tested protocol and a committed notebook.
+A forecasting portfolio built around three original notebooks: **VN30 with NeuralProphet, Bitcoin daily Low with TensorFlow, and BID stock with scikit-learn ExtraTrees**. Each notebook contains its model, evaluation, saved forecasts and plots, and a future forecasting workflow.
 
-The repository also includes a [VN30 NeuralProphet experiment](notebooks/vn30-forecast-neuralprophet.ipynb)
-with direct 30-step price forecasts, continuity anchoring and smoothing.
+Maintained by [Tuan Tran](https://github.com/tuanthescientist). MIT licensed code. These are exploratory projects that demonstrate implementation and evaluation experience; the saved metrics have different targets and evaluation designs.
 
-Maintained by [Tuan Tran](https://github.com/tuanthescientist). MIT licensed.
-Earlier exploratory notebooks (Bitcoin, BNB, gold, NeuralProphet, Chronos, recurrent nets) are
-preserved, unvalidated, on the branch
-[`archive/v0.1-exploratory`](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/tree/archive/v0.1-exploratory)
-(tag `v0.1.0`).
+## Start with these three notebooks
 
-## What to read
+| Project | Notebook | Saved price MAPE | How to interpret it |
+| --- | --- | ---: | --- |
+| VN30 · NeuralProphet | [vn30-forecast-neuralprophet.ipynb](notebooks/vn30-forecast-neuralprophet.ipynb) | Raw **9.72%**; smoothed **5.75%** | One direct 30-step forecast; smoothing is tuned on the same evaluation outcomes. |
+| Bitcoin Low · TensorFlow | [btc-low-forecast-tensorflow.ipynb](notebooks/btc-low-forecast-tensorflow.ipynb) | **3.40%** | Thirty rolling one-step forecasts, each using actual history through the previous day. |
+| BID · scikit-learn | [stock-forecast-sklearn.ipynb](notebooks/stock-forecast-sklearn.ipynb) | Last window **1.229%**; three-window mean **3.706%** | Baseline MAPE is 1.128% and 3.552%, respectively; low price error alone does not show baseline improvement. |
 
-| Order | Notebook | Question | One-line answer on the committed run |
-| --- | --- | --- | --- |
-| 1 | [01 Data and baselines](notebooks/01_data_and_baselines.ipynb) | What are the data, the protocol and the baseline to beat? | Returns are almost unpredictable from their own past; volatility clusters; trailing drift does not beat persistence. |
-| 2 | [02 Model comparison](notebooks/02_model_comparison.ipynb) | Do ridge, extra-trees and gradient boosting beat persistence? | No, not significantly, on either series (Holm-adjusted p = 1 for all 24 comparisons). |
-| 3 | [03 Uncertainty calibration](notebooks/03_uncertainty_calibration.ipynb) | Do prediction intervals stay calibrated as volatility changes? | Adaptive conformal keeps coverage within ~0.01 of nominal; static calibration over-covers; conditional coverage by volatility regime is still imperfect. |
-| 4 | [VN30 NeuralProphet](notebooks/vn30-forecast-neuralprophet.ipynb) | How do raw 30-step price forecasts compare with anchored and smoothed paths? | Saved forecasts and plots demonstrate the workflow; smoothing is tuned on the reported backtest segment. |
+The values are transcribed from the original saved runs, not rerun for this release. They should not be ranked against one another: instruments, targets, snapshots and forecast origins differ. [Full metric details](docs/preliminary_results.md) include MAE, RMSE, all BID test windows and the limits of each score.
 
-The notebooks are executed and their outputs are stored, so they can be read on GitHub without
-running anything. The protocol is in [`docs/protocol.md`](docs/protocol.md), the data card in
-[`docs/data.md`](docs/data.md), and the same numbers in application form are in
-[`docs/preliminary_results.md`](docs/preliminary_results.md). The doctoral proposal that uses
-this run is [`docs/proposals/PhD_Research_Proposal.md`](docs/proposals/PhD_Research_Proposal.md)
-([Word copy](docs/proposals/PhD_Research_Proposal_Tran_Anh_Tuan.docx)).
+For a quick review, open the three notebooks above and read their introductory notes, model cells, evaluation tables and forecast plots. For a deeper review, read [evaluation designs](docs/evaluation.md), the [data card](docs/data.md), then the [doctoral research proposal](docs/proposals/PhD_Research_Proposal.md) ([Word copy](docs/proposals/PhD_Research_Proposal_Tran_Anh_Tuan.docx)). The [repository guide](docs/reading_guide.md) explains the workflows and how to inspect the evidence.
 
-The NeuralProphet notebook is an additional price-forecasting experiment with its own data
-snapshot and evaluation design. Its smoothing parameters are selected on the same final
-30-row segment used to report error, so the smoothed metrics are tuning results. Its weekday
-calendar (`B`) includes filled holiday gaps. These outputs are not part of the controlled
-return-forecast benchmark below.
+## What each project demonstrates
 
-## Results at a glance
+**NeuralProphet / VN30.** Autoregression with 120 lags, trend and seasonality, and direct 30-step prediction. The notebook compares the raw forecast with continuity anchoring, EMA smoothing and volatility caps. The smoothed result is exploratory postprocessing selected on the reported segment. A weekday calendar fills holiday gaps.
 
-Test segment 2023-01-03 to mid-2026 (912 origins for VN30, 905 for BID). Settings were chosen
-on a validation segment (2018-2022 for VN30, 2019-2022 for BID) and frozen before the test
-segment was run. All horizons count trading sessions.
+**TensorFlow / Bitcoin Low.** A custom attention-based regressor uses 180 days of inputs, price and volume indicators, positional encoding, two multi-head attention blocks, Conv1D projections, pooling and a dense head. RobustScaler is fitted on the training segment. Saved test predictions use real preceding observations. The separate future path recursively replaces Low while holding the other features fixed.
 
-**Point forecasts: RMSE of the h-step log return divided by persistence (< 1 beats "no change")**
+**scikit-learn / BID.** A robust weighted ExtraTrees model uses 32 causal features and direct 30-step return targets. Five configurations are evaluated on eight validation windows; the selected configuration is reported on three test windows alongside zero-return persistence. The notebook includes data checks, error and direction metrics, training audits and CSV exports.
 
-| Series | Model | h = 1 | h = 5 | h = 20 |
-| --- | --- | ---: | ---: | ---: |
-| VN30 | trailing drift | 1.0023 | 1.0111 | 1.0415 |
-| VN30 | ridge | 0.9976 | 0.9969 | 0.9718 |
-| VN30 | extra-trees | 0.9974 | 0.9989 | 0.9736 |
-| VN30 | gradient boosting | 0.9963 | 0.9965 | 1.0040 |
-| BID | trailing drift | 1.0019 | 1.0084 | 1.0310 |
-| BID | ridge | 0.9973 | 0.9897 | 0.9768 |
-| BID | extra-trees | 0.9982 | 1.0011 | 1.0065 |
-| BID | gradient boosting | 0.9961 | 1.0033 | 1.0155 |
+## Run the primary notebooks
 
-None of these differences is statistically distinguishable from zero (Diebold-Mariano with HAC
-variance, block bootstrap, Holm correction). The tentative 2-3% gain of ridge at h = 20 appears
-on both series and is a lead for more data, not a finding.
+Open the saved notebooks on GitHub without installing anything. To rerun, use a **separate Python environment and Jupyter kernel for each project**; their original setup cells install different packages. The supplementary package and its lock file do not lock these three environments.
 
-**Interval coverage at h = 5 (target 80% / 95%)**
+| Notebook | Setup and data |
+| --- | --- |
+| NeuralProphet | Run the installation cell once, restart the kernel, then skip installation. It pins NeuralProphet 0.8.0. Supply the original Date/Price CSV at data/raw/vn30.csv or set VN30_CSV; the Kaggle path is a fallback. |
+| TensorFlow | Saved run: TensorFlow 2.19.0. Install tensorflow==2.19.0, numpy, pandas, scikit-learn, matplotlib, Pillow, tqdm, yfinance and pandas-datareader. The setup cell installs TensorFlow if missing. Yahoo Finance download requires internet and uses the current date; rerun scores can change. |
+| scikit-learn | Run setup once and restart if necessary. It pins scikit-learn 1.8.0. Supply the original OHLCV CSV at data/raw/bid.csv or set BID_CSV; the Kaggle path is a fallback. Exports go to ignored results/local/bid-extratrees/. |
 
-| Method | VN30 80% | VN30 95% | BID 80% | BID 95% |
-| --- | ---: | ---: | ---: | ---: |
-| Gaussian, EWMA volatility | 0.802 | 0.929 | 0.824 | 0.938 |
-| Split conformal, static | 0.864 | 0.985 | 0.910 | 0.985 |
-| Split conformal, rolling, volatility-normalised | 0.808 | 0.957 | 0.807 | 0.943 |
-| Adaptive conformal (ACI), volatility-normalised | **0.799** | **0.948** | **0.798** | **0.947** |
+Market CSVs and model weights are not bundled. The BID publication copy reads an external CSV instead of the embedded raw-data payload in the source notebook. Read [data provenance and snapshot limits](docs/data.md) before trying to reproduce the exact saved values. Primary models have not been retrained in CI.
 
-![Rolling coverage on the VN30 test segment](results/vn30/03_rolling_coverage.png)
+## Repository layout
 
-Full tables and figures for both series are in [`results/vn30/`](results/vn30) and
-[`results/bid/`](results/bid). Negative and mixed results are reported as found; for example,
-normalising residuals by trailing volatility reaches the right *average* coverage but
-under-covers calm periods (about 0.71-0.74 at the 80% level) and over-covers turbulent ones.
+```text
+notebooks/
+  vn30-forecast-neuralprophet.ipynb    primary: VN30 / NeuralProphet
+  btc-low-forecast-tensorflow.ipynb    primary: BTC Low / TensorFlow
+  stock-forecast-sklearn.ipynb         primary: BID / scikit-learn
+  supplementary/                     separate numbered evaluation notebooks 01–03
+docs/
+  data.md                            primary-project data and provenance
+  evaluation.md                      three distinct evaluation designs
+  preliminary_results.md             original saved metrics with limitations
+  reading_guide.md                    workflows and reviewer reading route
+  proposals/                         proposed PhD research, Markdown and Word
+  supplementary/                     separate study guide, protocol and results
+src/tsresearch/, configs/, tests/     infrastructure for the supplementary study
+results/vn30/, results/bid/           supplementary study tables and figures
+data/demo/                           synthetic input for supplementary smoke runs
+data/raw/, results/local/            ignored local data and generated outputs
+scripts/                             repository checks and supplementary runner
+```
 
-## Reproduce
+The numbered notebooks were added during repository restructuring and are **supplementary**, not renamed versions of the three original projects. Their source, tests and results are retained for optional further study. See the [supplementary guide](docs/supplementary/README.md). Earlier explorations remain on [archive/v0.1-exploratory](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/tree/archive/v0.1-exploratory) (tag v0.1.0).
+
+## Checks and supplementary execution
 
 ```bash
-git clone https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build.git
-cd Timeseries_Forecasting_Research_and_Build
-python -m venv .venv && source .venv/bin/activate        # Windows: .venv\Scripts\Activate.ps1
 python -m pip install -c requirements-lock.txt -e ".[dev]"
-python -m unittest discover -s tests -v                    # integrity tests
-python scripts/run_notebooks.py                            # run all three notebooks
+ruff check .
+python -m unittest discover -s tests -v
+python scripts/check_repository.py
+python scripts/run_notebooks.py   # numbered supplementary notebooks only
 ```
 
-Python 3.11 or 3.12. Without the market files the notebooks fall back to a **synthetic
-series** and print a notice; their numbers then differ from the committed ones. To reproduce the
-committed results, place the two files described in [`docs/data.md`](docs/data.md) at
-`data/raw/vn30.csv` and `data/raw/bid.csv` (not redistributed; hashes are recorded).
-`python scripts/run_notebooks.py --save` writes new outputs into the notebooks and results
-into `results/<dataset>/`.
+CI checks repository links and all six notebook files, runs unit tests for the supplementary package, and executes the three supplementary notebooks on synthetic data. Passing CI does not validate the original three forecasting metrics. The primary notebooks are run manually with their own dependencies and market data.
 
-For the [NeuralProphet notebook](notebooks/vn30-forecast-neuralprophet.ipynb), use a separate
-environment, run its installation cell once, restart the kernel, then skip that cell while
-running the rest. Provide the original `Date,Price` CSV at `data/raw/vn30.csv` or set `VN30_CSV`
-to its path; the original Kaggle path is also supported. Saved output reports NeuralProphet
-0.8.0, and the installation cell pins that version. The default notebook runner and synthetic
-CI run cover notebooks 01–03; the NeuralProphet experiment is run manually with market data.
+## Research direction
 
-## Integrity checks that are tested
+The [proposal](docs/proposals/PhD_Research_Proposal.md) starts from these three practical workflows and asks how model comparisons and uncertainty estimates hold up across horizons and volatility regimes. A common evaluation protocol, untouched future windows, data provenance, baselines and interval calibration are proposed next steps. Completed notebook outputs and proposed doctoral contributions are identified separately.
 
-* Forecasts and features at an origin do not change when every later observation is altered.
-* A model fitted at origin `o` sees only rows whose longest label is observed by `o`.
-* Validation targets end before the test segment starts (embargo of `max(h)` rows).
-* Interval calibration uses an outcome only after it is realised (`origin + h <= now`).
-* Metrics, Diebold-Mariano size under overlapping errors, block bootstrap, Holm correction,
-  and conformal coverage (including recovery after a variance shift) have unit tests.
-
-## Layout
-
-```
-notebooks/   01 data and baselines · 02 model comparison · 03 uncertainty calibration
-             vn30-forecast-neuralprophet.ipynb (additional NeuralProphet experiment)
-src/tsresearch/
-  data.py  features.py  protocol.py  models.py  backtest.py  selection.py
-  metrics.py  conformal.py  uncertainty.py  workspace.py
-configs/     fixed protocol dates and dataset locations
-tests/       temporal-integrity, metric and conformal tests
-docs/        protocol, data card, preliminary results, research proposal
-results/     tables and figures from the committed real-data run
-data/        synthetic demo series; data/raw/ is git-ignored
-scripts/     run_notebooks.py, check_repository.py, make_demo_ohlcv.py
-```
-
-## Scope and limits
-
-* Two Vietnamese series, one feature family, one test period per series (about 3.7 years) and
-  overlapping multi-day targets. The study says nothing about other markets, intraday data or
-  market efficiency, and does not evaluate trading profitability or costs.
-* The selection rule and dates were fixed before running these models, but the same market
-  history had been looked at in earlier informal experiments, so the test segment is not a
-  pristine, never-seen sample.
-* Provider, retrieval date and terms of the two market files are not recorded in the files;
-  the VN30 file has four weekend-dated rows (see [`docs/data.md`](docs/data.md)).
-* The adaptive conformal update with delayed feedback is a heuristic; the coverage guarantees
-  of the original algorithm are not claimed.
-
-## Where this is going
-
-This repository is the evaluation core for a doctoral proposal with two questions: conditional
-coverage of prediction intervals when volatility regimes change, and, only after that, an
-evidence-checked report that cannot state a number the packet does not contain
-([proposal](docs/proposals/PhD_Research_Proposal.md)). The next experiment is a volatility
-scale aimed at the conditional-coverage failure already measured here. Further assets, the
-archived neural models, and the report layer are later. None of those extensions is
-implemented in this commit.
-
-## Citation
-
-See [`CITATION.cff`](CITATION.cff). Please cite the repository together with the exact commit.
+See [CITATION.cff](CITATION.cff) when citing the repository; include the exact commit.

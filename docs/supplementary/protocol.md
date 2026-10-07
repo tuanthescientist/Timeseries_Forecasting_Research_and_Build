@@ -1,8 +1,10 @@
+> Supplementary study documentation. This describes notebooks 01–03, not the three primary forecasting projects.
+
 # Evaluation protocol
 
 This is the single protocol used by all three notebooks. It is implemented in
-[`src/tsresearch/`](../src/tsresearch) and its integrity properties are unit-tested.
-The dates below were fixed in [`configs/protocol.json`](../configs/protocol.json) before
+[`src/tsresearch/`](../../src/tsresearch) and its integrity properties are unit-tested.
+The dates below were fixed in [`configs/protocol.json`](../../configs/protocol.json) before
 any model in this repository was run.
 
 ## Forecast target and information set

@@ -1,70 +1,57 @@
-# Preliminary results
+# Saved results from the three primary notebooks
 
-These figures are the committed run of notebooks 01–03, not a new experiment.
-Result tables were produced at commit `7da3eb8` (7 October 2026). Later documentation
-commits do not change them. Cite that commit, or a later one only after checking that
-`results/vn30/` and `results/bid/` are unchanged.
+These numbers come from the original notebook outputs supplied for this portfolio. Publication edits retain the predictions, tables, charts and metric outputs. No primary model was retrained to produce this page. The three tasks are not a common benchmark.
 
-This is a controlled comparison against persistence. It is not evidence of trading profit,
-market efficiency, or a forecasting system that beats "no change".
+## VN30 / NeuralProphet
 
-## Protocol in one paragraph
+The saved run loads 4,408 source rows through 4 September 2026, reindexes to 4,610 weekday rows and evaluates a direct 30-step forecast on 27 July–4 September 2026. The training segment ends 24 July. Holiday gaps are filled.
 
-Targets are 1-, 5- and 20-session log returns. An origin uses only data observed by that
-row. Models refit every 20 origins. Hyper-parameters were chosen on a validation segment
-and frozen before the test segment was scored. The test window starts on 3 January 2023
-(912 origins on VN30, 905 on BID) and ends in August 2026. Differences from persistence
-use a Diebold–Mariano test with HAC variance, a block bootstrap, and a Holm correction
-within each dataset. Full rules: [protocol](protocol.md). Data limits: [data card](data.md).
+| Forecast | MAPE (%) | MAE (index points) | RMSE (index points) |
+| --- | ---: | ---: | ---: |
+| Raw | 9.72 | 187.88 | 218.17 |
+| Anchored and smoothed | 5.75 | 111.63 | 138.13 |
 
-## Point forecasts
+The notebook searches smoothing parameters by a discrete grid and Powell refinement **using the same final 30 outcomes**. The 3.97 percentage-point reduction is a retrospective tuning result. The smoothed MAPE does not estimate performance on an untouched future window. No persistence comparison is recorded in this saved evaluation.
 
-RMSE of the predicted log return, divided by the RMSE of persistence on the same origins.
-Below 1 would beat "no change".
+Source: [NeuralProphet notebook](../notebooks/vn30-forecast-neuralprophet.ipynb), backtest and raw/smoothed metric cells.
 
-| Series | Model | h = 1 | h = 5 | h = 20 |
-| --- | --- | ---: | ---: | ---: |
-| VN30 | trailing drift | 1.0023 | 1.0111 | 1.0415 |
-| VN30 | ridge | 0.9976 | 0.9969 | 0.9718 |
-| VN30 | extra-trees | 0.9974 | 0.9989 | 0.9736 |
-| VN30 | gradient boosting | 0.9963 | 0.9965 | 1.0040 |
-| BID | trailing drift | 1.0019 | 1.0084 | 1.0310 |
-| BID | ridge | 0.9973 | 0.9897 | 0.9768 |
-| BID | extra-trees | 0.9982 | 1.0011 | 1.0065 |
-| BID | gradient boosting | 0.9961 | 1.0033 | 1.0155 |
+## Bitcoin Low / TensorFlow
 
-No cell is distinguishable from persistence after Holm correction (adjusted p = 1 for all
-24 model-by-horizon tests). The ridge ratio near 0.97 at h = 20 appears on both series and
-is recorded as a lead for more assets, not as a finding. Source tables:
-[VN30](../results/vn30/02_test_point_metrics.csv),
-[BID](../results/bid/02_test_point_metrics.csv),
-[VN30 tests](../results/vn30/02_significance_vs_persistence.csv),
-[BID tests](../results/bid/02_significance_vs_persistence.csv).
+The saved Yahoo Finance run contains 4,397 raw daily rows through 30 September 2026 and 4,368 feature-complete rows. The split is 4,338 training rows and 30 test rows. A 180-day input window produces 30 **one-step** predictions; each next window includes the previous day's realised observations. The model is not refitted during this test loop.
 
-## Interval coverage at h = 5
+| Target | MAPE (%) | MAE (USD) | RMSE (USD) |
+| --- | ---: | ---: | ---: |
+| BTC-USD daily Low, final 30 days | 3.40 | 2,702.68 | 3,138.98 |
 
-Empirical coverage on the test origins. Targets are 80% and 95%.
+Scaler fitting uses only training rows. The model's early stopping and learning-rate reduction monitor training loss, with no independent validation split in this run. The later cell labelled Backtest predicts training windows and is an in-sample diagnostic. No persistence comparison or across-seed uncertainty is recorded for the held-out segment.
 
-| Method | VN30 80% | VN30 95% | BID 80% | BID 95% |
-| --- | ---: | ---: | ---: | ---: |
-| Gaussian, EWMA volatility | 0.802 | 0.929 | 0.824 | 0.938 |
-| Split conformal, static | 0.864 | 0.985 | 0.910 | 0.985 |
-| Split conformal, rolling, volatility-normalised | 0.808 | 0.957 | 0.807 | 0.943 |
-| Adaptive conformal, volatility-normalised | 0.799 | 0.948 | 0.798 | 0.947 |
+The future 30-day recursive forecast holds non-Low features constant; its accuracy is not measured by the table above. Live downloads, package versions and random training can change the result on rerun.
 
-Adaptive conformal is closest to the nominal level on average. Static intervals over-cover:
-the 2018–2022 validation window was more volatile than the test years, so a quantile frozen
-there is too wide later. Inside volatility terciles taken from the validation segment, the
-same adaptive intervals at h = 5 and 80% cover about 0.71–0.74 of calm origins and about
-0.87–0.93 of turbulent ones. Marginal calibration is therefore not conditional calibration.
-That gap is the first doctoral experiment, not a completed method. Source:
-[VN30](../results/vn30/03_interval_summary.csv),
-[BID](../results/bid/03_interval_summary.csv).
+Source: [TensorFlow notebook](../notebooks/btc-low-forecast-tensorflow.ipynb), split, windowing, training and evaluation cells.
 
-## What these numbers do not support
+## BID / scikit-learn ExtraTrees
 
-* A claim that any learned model forecasts these series better than persistence.
-* A claim that adaptive conformal is conditionally valid, or that the original coverage
-  guarantee applies to the delayed-feedback update used here.
-* Any statement about the four VN30 rows dated on weekends until those dates are reconciled
-  with the exchange calendar. See [data card](data.md).
+The saved run has 3,153 rows through 24 September 2026. Five configurations are checked on eight validation windows. The chosen model uses a 1,512-observation training window, minimum leaf size 12, joint 30-step targets, half-life 252 and robust limit 3. It is evaluated at three consecutive 30-observation test windows.
+
+| Test origin (row index) | Model | MAPE (%) | MAE (quoted price units) |
+| --- | --- | ---: | ---: |
+| 3063 | ExtraTrees | 3.197 | 1,247.859 |
+| 3063 | Zero-return baseline | 2.269 | 886.687 |
+| 3093 | ExtraTrees | 6.691 | 2,324.278 |
+| 3093 | Zero-return baseline | 7.260 | 2,522.520 |
+| 3123 | ExtraTrees | 1.229 | 445.702 |
+| 3123 | Zero-return baseline | 1.128 | 407.593 |
+| Three-window mean | ExtraTrees | **3.706** | **1,339.280** |
+| Three-window mean | Zero-return baseline | **3.552** | **1,272.267** |
+
+ExtraTrees mean daily direction accuracy is 38.889%, balanced direction accuracy 42.839%, and composite selection loss 0.968 versus the baseline's 1.000. A lower composite loss and a lower price MAPE measure different outcomes. ExtraTrees improves price MAPE in one window and is worse in two, including the final window. The printed 1.23% is the rounded final-window 1.229%.
+
+History was inspected in earlier experiments, as the original notebook states. Validation-based selection inside this run does not make the full history a pristine prospective test. The notebook also flags an OHLC inconsistency and a missing September date for source verification. No trading-profit claim follows from these results.
+
+Source: [ExtraTrees notebook](../notebooks/stock-forecast-sklearn.ipynb), frozen configuration, test comparison table and scope notes.
+
+## Relationship to the supplementary study
+
+The numbered notebooks use their own snapshots, 1/5/20-observation return horizons and evaluation protocol. Their aggregate files in results/vn30/ and results/bid/ are **not** the source of the three primary projects' scores. They are documented separately in [supplementary results](supplementary/preliminary_results.md).
+
+See [evaluation designs](evaluation.md) and [data provenance](data.md) for what must be fixed before making a generalisation claim.

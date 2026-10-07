@@ -29,7 +29,7 @@ def tracked_files():
 
 
 def check_notebooks(errors):
-    notebooks = sorted((ROOT / "notebooks").glob("*.ipynb"))
+    notebooks = sorted((ROOT / "notebooks").rglob("*.ipynb"))
     if not notebooks:
         errors.append("No notebooks found")
     for path in notebooks:
@@ -57,7 +57,7 @@ def check_links(errors):
     for folder in ("docs", "data", "results"):
         markdown.extend((ROOT / folder).rglob("*.md"))
     documents = [(p, p.read_text(encoding="utf-8")) for p in markdown if p.exists()]
-    for path in sorted((ROOT / "notebooks").glob("*.ipynb")):
+    for path in sorted((ROOT / "notebooks").rglob("*.ipynb")):
         for cell in json.loads(path.read_text(encoding="utf-8"))["cells"]:
             if cell["cell_type"] == "markdown":
                 documents.append((path, "".join(cell["source"])))

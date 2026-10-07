@@ -1,6 +1,6 @@
-"""Execute the notebooks top to bottom.
+"""Execute the supplementary evaluation notebooks top to bottom.
 
-    python scripts/run_notebooks.py                 # smoke test: run, discard results
+    python scripts/run_notebooks.py                 # supplementary smoke test; discard results
     python scripts/run_notebooks.py --save          # run and store outputs in the notebooks
     TSR_FORCE_DEMO=1 python scripts/run_notebooks.py   # force the synthetic demo data
 
@@ -23,7 +23,7 @@ if sys.platform == "win32":
     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
 ROOT = Path(__file__).resolve().parents[1]
-NOTEBOOKS = ROOT / "notebooks"
+NOTEBOOKS = ROOT / "notebooks" / "supplementary"
 
 
 def run(path: Path, save: bool, timeout: int) -> None:
@@ -42,7 +42,9 @@ def run(path: Path, save: bool, timeout: int) -> None:
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__,
                                      formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("names", nargs="*", help="notebook file names (default: all)")
+    parser.add_argument(
+        "names", nargs="*",
+        help="supplementary notebook file names (default: numbered study only)")
     parser.add_argument("--save", action="store_true", help="write outputs into the notebooks")
     parser.add_argument("--timeout", type=int, default=3600, help="seconds per cell")
     args = parser.parse_args()

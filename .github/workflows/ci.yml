@@ -21,7 +21,7 @@ jobs:
       - run: python -m unittest discover -s tests -v
       - run: python scripts/check_repository.py
   notebooks:
-    name: notebooks run end to end (synthetic data)
+    name: supplementary notebooks (synthetic data)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

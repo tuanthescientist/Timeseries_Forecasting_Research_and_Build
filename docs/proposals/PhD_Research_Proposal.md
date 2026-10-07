@@ -1,231 +1,91 @@
-# Calibrated Forecast Uncertainty under Regime Change
+# Reliable Financial Forecasting Across Horizons and Volatility Regimes
 
-Proposed doctoral research · Trần Anh Tuân · 7 October 2026
+Proposed doctoral research · Trần Anh Tuấn · 7 October 2026
 
-A readable copy of the application text. The same text is in
-[PhD_Research_Proposal_Tran_Anh_Tuan.docx](PhD_Research_Proposal_Tran_Anh_Tuan.docx).
-Numbers below are the committed run; the tables live in
-[preliminary results](../preliminary_results.md).
+This proposal builds on three original forecasting notebooks in the [repository](../../README.md). Existing project results are summarised in [preliminary results](../preliminary_results.md). The [Word copy](PhD_Research_Proposal_Tran_Anh_Tuan.docx) contains the same substantive text. The common benchmark and new calibration methods below are proposed work.
 
 ## Abstract
 
-A useful forecast states a number and how much trust that number deserves when conditions
-change. I propose to study prediction intervals for financial returns under volatility regime
-change and, only after that result is stable, whether an evidence-checked report improves a
-decision relative to the same numbers in a fixed template. A completed preliminary study on the
-VN30 index and BIDV (BID), under a tested rolling-origin protocol, found that ridge regression,
-extra-trees and gradient boosting do not beat persistence at a detectable level. Adaptive
-conformal intervals kept marginal coverage within about one percentage point of the 80% and 95%
-targets. Static calibration over-covered, and volatility-normalised intervals failed
-conditionally: they under-covered calm periods and over-covered turbulent ones. The doctoral
-project treats that negative point-forecast result as a baseline. The intended contribution is
-a calibration method whose coverage holds inside regimes, not only on average, and a later
-reporting layer that cannot state a number the evidence packet does not contain.
+I propose to investigate when daily financial forecasts generalise across forecast horizons and volatility regimes, and how their uncertainty can be calibrated when market conditions change. My current portfolio comprises three practical projects: VN30 price forecasting with NeuralProphet, Bitcoin daily Low forecasting with a TensorFlow attention model, and BID stock forecasting with robust weighted scikit-learn ExtraTrees. The notebooks contain saved predictions, plots and error metrics, but their evaluation designs differ. The Bitcoin run reports 3.40% MAPE for thirty one-step forecasts; NeuralProphet reports 9.72% raw and 5.75% smoothed MAPE, with smoothing tuned on the scored outcomes; BID reports 1.229% in the final window and 3.706% across three windows versus a 3.552% baseline mean. These observations motivate a research problem rather than establish model superiority. The doctoral work will use documented data, chronological model selection, matching forecast origins and prospective windows to compare forecasting strategies, then investigate interval coverage and width across volatility regimes.
 
-## 1. Problem
+## 1. Motivation and scope
 
-Inventory, staffing and risk limits depend on forecasts. For daily financial returns the hard
-part is often not the point forecast. Persistence, a predicted log return of zero, is already
-difficult to beat, and a small error in the price level can look like skill when it only
-reflects that level. What remains useful is uncertainty that stays calibrated when volatility
-shifts, and a report that does not add claims the numbers do not support.
+A financial price forecast can appear close to the realised path while failing to improve on persistence. Different forecast origins can also produce superficially similar metrics for different tasks: updating a one-day forecast after each observed day is not the same experiment as predicting a full month from one origin. My existing projects expose both issues and provide concrete implementations to study them.
 
-The first empirical scope is daily VN30 and BID, where a protocol and a negative baseline
-already exist. A public demand benchmark is a later domain. Energy, agriculture and weather
-are out of scope. Realised trading profit is not an objective.
+The initial scope is daily VN30, BTC-USD Low and BID. Each instrument will retain a clearly defined target and calendar. Comparisons will be within the same instrument and target before any cross-series summary. Trading profitability is not an objective of the initial study. A report that communicates forecast evidence is a possible later extension, conditional on reliable numerical results.
 
-## 2. Related work and the gap
+## 2. Related work and research opportunity
 
-Accuracy is judged against a simple benchmark, with a scale-free metric such as MASE [1].
-Diebold and Mariano [2], with the correction of Harvey, Leybourne and Newbold [3], test
-whether a loss difference exceeds noise when errors are dependent. Rolling-origin evaluation,
-not a random split, is the right design [4, 5]. M4 and M5 showed that rankings depend on the
-loss, the horizon and the series, and that simple methods remain competitive [6, 7].
+NeuralProphet combines decomposable forecasting components with autoregression in a PyTorch framework [1]. It provides a practical contrast to the custom TensorFlow attention regressor and ExtraTrees workflow already implemented in this portfolio. Their existing notebook scores cannot be used to rank those model families because the tasks and evaluation origins differ.
 
-Distribution-free intervals need not assume that the whole sample is exchangeable.
-Conformalised quantile regression [8], conformal prediction beyond exchangeability [9], EnbPI
-[10] and conformal time-series forecasting [11] target marginal coverage under dependence or
-weighted exchangeability. Adaptive conformal inference updates the miscoverage level online
-when the distribution shifts [12]. Coverage alone is not enough: an interval score penalises
-width, so a method cannot win by making every interval arbitrarily wide [13].
+Rolling-origin evaluation fits and scores using chronologically available observations; it can be designed for one-step or multiple-step horizons [2]. Forecast accuracy measures need careful interpretation, and scaled errors can support comparisons against simple benchmarks [3]. The first research opportunity is to determine which conclusions from these practical workflows survive comparable origins, baseline comparisons, independent selection windows and changes in volatility.
 
-Pretrained time-series models transfer across datasets in zero-shot benchmarks [14, 15, 16].
-Time-LLM reprograms a frozen language model to emit forecasts [17]. A direct ablation found
-that, for point forecasting, removing the language-model component often did not hurt and
-sometimes helped [18]. That is why this proposal does not treat a language model as a
-forecasting engine. The open question is narrower: once a numerical forecast and an interval
-exist, can a constrained report communicate them without unsupported numbers, and does that
-communication change a decision [19]?
-
-The gap is conditional coverage. Existing conformal methods are typically judged on marginal
-coverage. The preliminary run shows that marginal coverage can sit on the nominal level while
-coverage inside volatility regimes does not. The thesis studies horizon-specific sequential
-calibration aimed at that failure, and only then a reporting layer whose numerical claims are
-checked by code against an evidence packet available at the forecast origin.
+Adaptive conformal inference provides a starting point for calibration under distribution shift [4]. The second opportunity is empirical: compare horizon-specific calibration methods by both marginal coverage and coverage within predefined volatility regimes, while accounting for interval width and delayed availability of multi-step outcomes. Existing theoretical results will be reviewed before claiming a guarantee for any proposed adaptation.
 
 ## 3. Research questions
 
-**RQ1.** Can sequential, horizon-specific calibration keep both marginal coverage and coverage
-inside predefined volatility regimes when those regimes change, at a width that remains useful?
-The working hypothesis is that adaptation reduces persistent over- or under-coverage relative
-to a static split, but a volatility scale fitted on an earlier regime can over-correct.
-Negative results will be reported.
+**RQ1.** Under matching information sets and chronological evaluation, when do decomposable neural, attention-based and tree-based forecasts improve on persistence across horizons and volatility regimes?
 
-**RQ2.** Can a schema, source timestamps and a deterministic numerical check reduce unsupported
-statements relative to an unconstrained report, and does a verified report change cost in a
-fixed inventory simulation relative to a template that shows the same forecast distribution?
-The working hypothesis is that verification will cut unsupported numbers, while decision value
-may be small once the numbers are already shown. The language model is not scored as a
-forecaster [18].
+The working hypothesis is that apparent price accuracy will often shrink relative to persistence once forecast origins and selection rules are matched. Direct and recursive strategies may respond differently to horizon and regime changes. Negative or mixed findings will be retained.
 
-These two questions are the thesis. Comparing further model families, including models from the
-archived notebooks, is supporting work under the same protocol. A human study needs ethics
-approval and is not required for the minimum thesis.
+**RQ2.** Can horizon-specific sequential calibration improve prediction-interval coverage within volatility regimes at a useful width, compared with static and rolling calibration?
 
-## 4. Preliminary evidence
+The working hypothesis is that adaptation can reduce persistent miscoverage after a volatility change, but good average coverage will not necessarily imply good coverage inside each regime. Regime definitions and calibration choices will be fixed before a new final evaluation.
 
-The public repository implements the protocol and stores a completed run. Result tables are
-those of commit `7da3eb8` (7 October 2026). Validation dates were fixed before that run. Models refit every 20
-origins. A training label at horizon *h* is used only if it was already observed. Features at
-an origin do not change if later prices are replaced. Those properties are unit-tested.
+These questions define the proposed empirical and methodological work. No new forecasting architecture or calibration guarantee is claimed as already completed.
 
-The test segment runs from 3 January 2023 into August 2026 (912 origins on VN30, 905 on BID).
-Horizons are 1, 5 and 20 sessions. The table is RMSE of the log-return forecast divided by
-persistence. Below 1 would beat "no change".
+## 4. Existing preparation and preliminary evidence
 
-| Series | Model | h = 1 | h = 5 | h = 20 |
-| --- | --- | ---: | ---: | ---: |
-| VN30 | trailing drift | 1.0023 | 1.0111 | 1.0415 |
-| VN30 | ridge | 0.9976 | 0.9969 | 0.9718 |
-| VN30 | extra-trees | 0.9974 | 0.9989 | 0.9736 |
-| VN30 | gradient boosting | 0.9963 | 0.9965 | 1.0040 |
-| BID | trailing drift | 1.0019 | 1.0084 | 1.0310 |
-| BID | ridge | 0.9973 | 0.9897 | 0.9768 |
-| BID | extra-trees | 0.9982 | 1.0011 | 1.0065 |
-| BID | gradient boosting | 0.9961 | 1.0033 | 1.0155 |
+The three original notebooks demonstrate data loading, feature construction, model implementation, evaluation and future forecasting. Original saved outputs are retained in the public copies. Publication edits add scope notes and portable setup/data paths; the BID copy reads an externally supplied CSV instead of its embedded raw-data payload.
 
-No comparison with persistence is significant after a Diebold–Mariano test with HAC variance,
-a block bootstrap, and Holm correction (adjusted *p* = 1 in all 24 tests). A ridge ratio near
-0.97 at horizon 20 appears on both series. With overlapping errors and one test window, that
-is a lead for more data, not a result.
+**VN30 / NeuralProphet.** The saved run uses 4,408 source rows through 4 September 2026, reindexed to a weekday grid. It fits autoregression with 120 lags and a direct 30-step output. On the final thirty weekday rows, raw MAPE is 9.72%, MAE 187.88 and RMSE 218.17 index points. The anchored and smoothed path reports MAPE 5.75%, MAE 111.63 and RMSE 138.13. Smoothing is searched on the same scored outcomes, so this is retrospective tuning evidence. Holiday filling also means the steps are not necessarily exchange sessions.
 
-Empirical coverage at horizon 5:
+**BTC-USD Low / TensorFlow.** The saved run uses 4,397 raw daily rows through 30 September 2026, with 4,368 feature-complete rows. A 180-day input window feeds a positional-encoding and multi-head-attention regressor. RobustScaler is fitted on training data. Thirty held-out one-step predictions report MAPE 3.40%, MAE USD 2,702.68 and RMSE USD 3,138.98; each prediction uses realised observations through the previous day. Training callbacks monitor training loss, with no separate validation segment in this run. The later recursive future path holds non-Low features fixed and has not been evaluated by that metric.
 
-| Method | VN30 80% | VN30 95% | BID 80% | BID 95% |
-| --- | ---: | ---: | ---: | ---: |
-| Gaussian, EWMA volatility | 0.802 | 0.929 | 0.824 | 0.938 |
-| Split conformal, static | 0.864 | 0.985 | 0.910 | 0.985 |
-| Rolling, volatility-normalised | 0.808 | 0.957 | 0.807 | 0.943 |
-| Adaptive conformal, volatility-normalised | 0.799 | 0.948 | 0.798 | 0.947 |
+**BID / scikit-learn ExtraTrees.** The saved snapshot contains 3,153 observations through 24 September 2026. Five configurations are checked on eight validation windows, followed by three 30-observation test windows. ExtraTrees MAPE is 3.197%, 6.691% and 1.229%; zero-return baseline MAPE is 2.269%, 7.260% and 1.128%. The corresponding means are 3.706% and 3.552%. Mean daily direction accuracy is 38.889%; the composite selection loss is 0.968 relative to baseline 1.000. The model improves that composite measure while not improving average price MAPE. Previously inspected history and flagged data issues limit generalisation claims.
 
-Adaptive conformal is closest to the nominal level on average. Static intervals over-cover
-because 2018–2022 was more volatile than the test years. Inside volatility terciles defined on
-the validation segment, the normalised adaptive intervals at horizon 5 and 80% cover about
-0.71–0.74 of calm origins and about 0.87–0.93 of turbulent ones. That conditional failure is
-the starting point of RQ1.
+These experiments establish practical preparation and motivate better evaluation. They do not constitute a unified benchmark, statistical evidence of superiority or a prospective validation. The separately numbered supplementary study provides optional tested infrastructure; its results are not pooled with these original scores or treated as certification of the primary models.
 
-Limits, so they are not discovered later: two series, one feature family, one test window,
-and overlapping horizons. The delayed-feedback update does not inherit the coverage guarantee
-of the original adaptive conformal algorithm. The same history was inspected informally before
-the frozen run, so the test segment is not a never-seen sample. Provider, download date and
-licence are unrecorded. Four VN30 test rows are dated Saturday or Sunday and must be
-reconciled with the exchange calendar before any calendar claim. Market files are not in the
-repository ([data card](../data.md), [results note](../preliminary_results.md)).
+## 5. Proposed methodology
 
-## 5. Proposed work
+**Data and protocol.** Record the provider, retrieval time, byte hash, adjustment policy, rights and calendar of every snapshot. Reconcile flagged source issues. Define targets and the information available at each origin. Use chronological fitting, model selection, calibration and final evaluation segments, separating boundaries where multi-step labels would otherwise cross them. Because the current history has been inspected, collect a new prospective evaluation window before making a stronger generalisation claim.
 
-**RQ1.** Keep the existing protocol. On the validation segment only, fit a scale for interval
-width: a monotone function of trailing EWMA volatility, or a quantile regression of the
-absolute residual on volatility and horizon. Compare it with static split conformal, rolling
-split conformal, an EnbPI-style ensemble where the compute budget allows, and adaptive
-conformal inference [10, 12]. Report marginal coverage, coverage by predeclared volatility
-regime, mean width and interval score. Freeze the scale and any step size before the test
-segment is opened.
+**RQ1 experiments.** Compare persistence and simple drift with NeuralProphet, the TensorFlow attention model and ExtraTrees on matching tasks. Evaluate one-step rolling forecasts separately from direct and recursive multi-step forecasts at predeclared horizons. Keep model-specific feature sets explicit; run controlled feature and postprocessing ablations rather than attributing every difference to the architecture. Select NeuralProphet smoothing, neural training choices and tree settings on validation data only. Freeze choices before the final window. Report all windows, failures, compute cost and seed variability where applicable.
 
-**RQ2, after a frozen interval exists.** The report receives an evidence packet: target,
-origin time, forecast, interval, past errors, model disagreement, and allowed actions.
-Context is admitted only if its timestamp is at or before the origin. Each numerical claim
-needs an evidence identifier. Code checks every number against the packet; a failure falls
-back to a fixed template. The model may not change the forecast. Scores are consistency,
-unsupported-claim rate, abstention, and cost in an inventory simulation with fixed shortage
-and holding costs. Hindsight is used only for scoring. A human study needs ethics approval.
+**RQ2 experiments.** Construct residual-based intervals with static, rolling and adaptive calibration. Use a multi-step outcome only once its horizon has elapsed. Define volatility regimes from past information and earlier selection data, not future realised test errors. Compare both unnormalised and volatility-normalised residuals. Audit order-statistic and feedback conventions before implementing any claimed conformal correction. A calibration method will be judged by coverage and width together, rather than by average coverage alone.
 
-Further model families enter only as a check that the interval result does not depend on the
-centre. An LLM is not added to that comparison [18].
+**Metrics and uncertainty.** Report MAE, RMSE and scaled error relative to a training-fitted denominator, with price MAPE as a secondary descriptive measure. Do not use MAPE on near-zero returns. Report performance relative to matching persistence, per-horizon errors and regime-specific scores. Interval evaluation includes 80% and 95% coverage, mean width and interval score. Estimate uncertainty in loss differences using a dependence-aware resampling design, and predeclare comparison families and any multiplicity correction.
 
-## 6. Data and evaluation rules
+## 6. Intended contributions and practical feasibility
 
-Before any new test run, the VN30 and BID cards will name the provider, the calendar, the
-adjustment policy and the usage rights, or the series will not be used in a submitted result.
-A second domain, if reached, will be a public licensed demand benchmark chosen before fitting,
-with the series list fixed in advance. Horizons stay in observations, not calendar days.
-Fit, selection, calibration and the final window are chronological. Overlapping targets are
-separated by a gap at each boundary. A change of rule after the final window opens requires a
-new prospective window.
+The intended outputs are a reproducible comparison of forecast strategies under matching information sets, an empirical account of where apparent accuracy survives baseline and regime checks, and a horizon-specific calibration approach or documented boundary showing where simpler intervals are preferable. Novelty will be refined with the literature review and the potential supervisor; the existing notebook implementations are preliminary preparation.
 
-Point metrics are MAE, RMSE and MASE, with the MASE denominator fitted before the test
-segment. MAPE is secondary and is not used on returns. Interval metrics are coverage at 80%
-and 95%, mean width, interval score, and pinball loss where the model emits a quantile.
-Differences use a block bootstrap and a Diebold–Mariano test, with Holm correction inside each
-family of tests. Failed fits and runtime are reported with the best cell, not instead of it.
+The project begins with three working model workflows and saved evidence that I can explain in detail. The supplementary Python package provides reusable temporal-evaluation utilities and tests, but requires review before integrating it with the primary projects. Separate dependency environments and model training costs will be recorded. No GPU-heavy sweep is needed before establishing reliable baseline experiments.
 
-## 7. Contribution, feasibility and plan
+## 7. Proposed plan
 
-Three contributions are in view. The first is already in hand: an audited protocol and a
-public negative result against persistence. The second is a calibration comparison aimed at
-conditional coverage under a volatility shift, which marginal adaptive conformal did not
-solve. The third is an evidence schema and a checker for forecast reports, scored against a
-template that shows the same numbers. A useful outcome may be a boundary: a simpler interval,
-or a template, is the better tool.
+**Year 1.** Complete the literature review, data provenance and calendar checks. Freeze a common evaluation specification, add matching baselines to the primary workflows and reserve a prospective evaluation window.
 
-Preparation is a First Class Honours degree in Computing Science, a final-year project on café
-revenue, and the repository above, with tests and continuous integration. Archived notebooks
-are exploratory and are not cited as validated accuracy.
+**Year 2.** Evaluate direct, recursive and rolling strategies across horizons and volatility regimes. Run feature/postprocessing ablations and report null results as well as improvements.
 
-* Year 1. Confirm provenance and reconcile the weekend-dated VN30 rows. Complete the
-  literature review against the list below. Run the conditional-coverage experiment on the
-  existing protocol.
-* Year 2. Repeat on at least one further asset and one stress window. Compare calibration
-  methods. Keep the failures.
-* Year 3. Verified reports, ablations, and the inventory simulation. A human study only if it
-  is approved.
-* Year 4. Replication, public artefacts, thesis.
+**Year 3.** Develop and compare horizon-specific interval calibration, including delayed feedback and regime coverage. Replicate the main findings on additional documented periods or instruments if feasible.
 
-The minimum thesis is RQ1 on the two series already in the protocol, plus the inventory
-comparison in RQ2 if the report layer is stable. If conditional coverage does not improve,
-that negative result is the finding, and the report layer is evaluated on the best simple
-interval rather than dropped.
+**Year 4.** Independent replication, release of reproducible artefacts and thesis writing. An evidence-checked reporting interface is an optional extension after the forecast and calibration experiments are stable.
 
-## 8. Reproducibility and use
+The order and duration will be adapted to programme requirements and supervision. A minimum viable thesis prioritises the two research questions and excludes optional reporting work if it distracts from reliable evaluation.
 
-Releases include code, a locked environment, split dates, prompts, schemas and verification
-rules. Data are redistributed only if the provider allows; otherwise the card records the hash
-and how to obtain the file. A retrospective language-model test can be contaminated by
-pretraining, so that check will be prospective or will use a local model with a known cutoff.
+## 8. Reproducibility and limitations
 
-This document is proposed work plus one preliminary study. It is not a finished doctorate, a
-trading system, or an agreed supervision.
+Publish code, environment records, split dates, baseline definitions, selection rules, data cards and complete result tables. Redistribute raw data only with permission; otherwise record acquisition instructions and hashes. Keep synthetic smoke tests separate from financial accuracy evidence. Public saved outputs are informative but are not proof that rerunning a live download will produce identical numbers.
+
+The current projects use different data snapshots and protocols; source rights and adjustments are incomplete; NeuralProphet smoothing uses the reported outcomes; BTC lacks a separate validation split; BID history was inspected earlier and has data flags. Addressing these limits is part of the proposed research. This document is a doctoral research draft, not a finished contribution or an agreed supervision.
 
 ## References
 
-1. Hyndman, R. J., and Koehler, A. B. (2006). Another look at measures of forecast accuracy. *International Journal of Forecasting*, 22(4), 679–688. https://doi.org/10.1016/j.ijforecast.2006.03.001
-2. Diebold, F. X., and Mariano, R. S. (1995). Comparing predictive accuracy. *Journal of Business & Economic Statistics*, 13(3), 253–263. https://doi.org/10.1080/07350015.1995.10524599
-3. Harvey, D., Leybourne, S., and Newbold, P. (1997). Testing the equality of prediction mean squared errors. *International Journal of Forecasting*, 13(2), 281–291. https://doi.org/10.1016/S0169-2070(96)00719-4
-4. Tashman, L. J. (2000). Out-of-sample tests of forecasting accuracy: an analysis and review. *International Journal of Forecasting*, 16(4), 437–450. https://doi.org/10.1016/S0169-2070(00)00065-0
-5. Bergmeir, C., and Benítez, J. M. (2012). On the use of cross-validation for time series predictor evaluation. *Information Sciences*, 191, 192–213. https://doi.org/10.1016/j.ins.2011.12.028
-6. Makridakis, S., Spiliotis, E., and Assimakopoulos, V. (2020). The M4 Competition: 100,000 time series and 61 forecasting methods. *International Journal of Forecasting*, 36(1), 54–74. https://doi.org/10.1016/j.ijforecast.2019.04.014
-7. Makridakis, S., Spiliotis, E., and Assimakopoulos, V. (2022). M5 accuracy competition: Results, findings, and conclusions. *International Journal of Forecasting*, 38(4), 1346–1364. https://doi.org/10.1016/j.ijforecast.2021.11.013
-8. Romano, Y., Patterson, E., and Candès, E. (2019). Conformalized quantile regression. *Advances in Neural Information Processing Systems*, 32. https://arxiv.org/abs/1905.03222
-9. Barber, R. F., Candès, E. J., Ramdas, A., and Tibshirani, R. J. (2023). Conformal prediction beyond exchangeability. *The Annals of Statistics*, 51(2), 816–845. https://arxiv.org/abs/2202.13415
-10. Xu, C., and Xie, Y. (2021). Conformal prediction interval for dynamic time-series. *Proceedings of the 38th International Conference on Machine Learning*, PMLR 139, 11559–11569. https://arxiv.org/abs/2010.09107
-11. Stankevičiūtė, K., Alaa, A. M., and van der Schaar, M. (2021). Conformal time-series forecasting. *Advances in Neural Information Processing Systems*, 34. https://proceedings.neurips.cc/paper/2021/hash/312f1ba2a72318edaaa995a67835fad5-Abstract.html
-12. Gibbs, I., and Candès, E. (2021). Adaptive conformal inference under distribution shift. *Advances in Neural Information Processing Systems*, 34. https://arxiv.org/abs/2106.00170
-13. Gneiting, T., and Raftery, A. E. (2007). Strictly proper scoring rules, prediction, and estimation. *Journal of the American Statistical Association*, 102(477), 359–378. https://doi.org/10.1198/016214506000001437
-14. Ansari, A. F., Stella, L., Turkmen, C., Zhang, X., Mercado, P., Shen, H., Shchur, O., Rangapuram, S. S., Pineda Arango, S., Kapoor, S., Zschiegner, J., Maddix, D. C., Wang, H., Mahoney, M. W., Torkkola, K., Wilson, A. G., Bohlke-Schneider, M., and Wang, Y. (2024). Chronos: Learning the language of time series. *Transactions on Machine Learning Research*. https://arxiv.org/abs/2403.07815
-15. Das, A., Kong, W., Sen, R., and Zhou, Y. (2024). A decoder-only foundation model for time-series forecasting. *Proceedings of the 41st International Conference on Machine Learning*, PMLR 235. https://arxiv.org/abs/2310.10688
-16. Woo, G., Liu, C., Kumar, A., Xiong, C., Savarese, S., and Sahoo, D. (2024). Unified training of universal time series forecasting transformers. *Proceedings of the 41st International Conference on Machine Learning*, PMLR 235. https://arxiv.org/abs/2402.02592
-17. Jin, M., Wang, S., Ma, L., Chu, Z., Zhang, J. Y., Shi, X., Chen, P.-Y., Liang, Y., Li, Y.-F., Pan, S., and Wen, Q. (2024). Time-LLM: Time series forecasting by reprogramming large language models. *International Conference on Learning Representations*. https://arxiv.org/abs/2310.01728
-18. Tan, M., Merrill, M. A., Gupta, V., Althoff, T., and Hartvigsen, T. (2024). Are language models actually useful for time series forecasting? *Advances in Neural Information Processing Systems*, 37. https://arxiv.org/abs/2406.16964
-19. Zhao, H., et al. (2025). TimeSeriesScientist: A general-purpose AI agent for time series analysis. arXiv preprint. https://arxiv.org/abs/2510.01538
+[1] Triebe, O., Hewamalage, H., Pilyugina, P., Laptev, N., Bergmeir, C., and Rajagopal, R. (2021). NeuralProphet: Explainable Forecasting at Scale. arXiv:2111.15397. https://arxiv.org/abs/2111.15397
 
-Repository: https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build
+[2] Hyndman, R. J., and Athanasopoulos, G. Forecasting: Principles and Practice, 3rd edition, Section 5.10: Time series cross-validation. https://otexts.com/fpp3/tscv.html
+
+[3] Hyndman, R. J., and Koehler, A. B. (2006). Another look at measures of forecast accuracy. International Journal of Forecasting, 22(4), 679–688. https://robjhyndman.com/publications/another-look-at-measures-of-forecast-accuracy/
+
+[4] Gibbs, I., and Candès, E. (2021). Adaptive Conformal Inference Under Distribution Shift. Advances in Neural Information Processing Systems, 34. https://arxiv.org/abs/2106.00170

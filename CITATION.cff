@@ -1,6 +1,6 @@
 cff-version: 1.2.0
 message: "If you use this software, please cite the repository and the exact commit."
-title: "Time-Series Forecasting: Research & Build"
+title: "Financial Time-Series Forecasting: Three Notebook Projects"
 type: software
 authors:
   - family-names: Tran
@@ -10,13 +10,13 @@ license: MIT
 version: 0.2.0
 date-released: 2026-10-07
 abstract: >-
-  A reproducible protocol for evaluating financial return forecasts against persistence
-  under explicit information constraints, with sequentially calibrated prediction
-  intervals (split and adaptive conformal). Results on VN30 and BID are reported,
-  including negative findings.
+  Three original financial forecasting workflows: VN30 with NeuralProphet, Bitcoin
+  daily Low with a TensorFlow attention model, and BID with scikit-learn ExtraTrees.
+  Saved forecasts, error metrics and evaluation limitations are documented. A separate
+  supplementary study provides rolling-origin and interval-calibration infrastructure.
 keywords:
   - time-series forecasting
-  - rolling-origin evaluation
-  - conformal prediction
-  - uncertainty calibration
+  - neuralprophet
+  - tensorflow
+  - scikit-learn
   - financial time series

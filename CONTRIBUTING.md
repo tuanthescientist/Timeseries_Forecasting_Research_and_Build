@@ -1,16 +1,18 @@
 # Contributing
 
-Use a focused branch and say which research question or defect it addresses.
+The three original notebooks in notebooks/ are the primary portfolio. Keep their targets, evaluation designs and saved-run provenance explicit. Changes to saved model results require a documented new run; distinguish retrospective tuning from held-out performance.
+
+Use a focused branch and say which project, supplementary research question or defect it addresses.
 
 ```bash
 python -m pip install -c requirements-lock.txt -e ".[dev]"
 ruff check .
 python -m unittest discover -s tests -v
 python scripts/check_repository.py
-TSR_FORCE_DEMO=1 python scripts/run_notebooks.py   # optional: notebooks on synthetic data
+TSR_FORCE_DEMO=1 python scripts/run_notebooks.py   # optional: supplementary notebooks on synthetic data
 ```
 
-Rules that keep results comparable:
+The following model-interface and protocol rules apply to the supplementary package. They do not describe the original three notebooks' saved runs:
 
 * A new model implements the interface in `src/tsresearch/models.py` and is compared with
   persistence on identical origins; hyper-parameters are chosen on the validation segment

@@ -23,5 +23,8 @@ catboost_info/
 *.pt
 *.pth
 *.h5
+*.keras
+extratrees_results/
+.ipython/
 .DS_Store
 Thumbs.db
