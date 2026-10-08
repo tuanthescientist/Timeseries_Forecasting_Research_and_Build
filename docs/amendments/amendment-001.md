@@ -1,0 +1,11 @@
+# Amendment 001 — 8 October 2026
+
+Parent: [protocol-v1](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/tree/protocol-v1), commit 327f5548e86bcc932e20e2705e7ea5e99c425fdf. That tag remains unchanged. Active foundation design: protocol-v1.1. This amendment is recorded before the new Stage A baseline run, but after inspection of historical data and the archived notebook; it is not retrospective preregistration.
+
+The old prospective candidate 2026-10-09–2027-04-06 is withdrawn because a complete A–D freeze cannot be established before its start. The new candidate is 2027-02-01–2027-07-30 (180 calendar days). Eligibility still requires a published full-study specification, locked snapshot and completed A–D artifacts before 2027-02-01 UTC. Foundation-only scope cannot pass the prospective gate. If the deadline is missed, another dated amendment must reserve a later future window; no backdating.
+
+2026-10-01–2027-01-31 is an explicit preparation/bridge period, excluded from primary retrospective and prospective scores. Dates not yet observed are not claimed as acquired. Retrospective evaluation remains 2024-01-01–2026-09-30, with training, validation and calibration splits unchanged. Labels must remain inside their evaluation stage.
+
+A newly acquired Yahoo BTC-USD snapshot ends 2026-10-07; its retrieval time, byte hash and row count are in the manifest. It is not the original notebook download. Vendor raw files remain local. The VN30/BID CSVs are removed from current Git tracking; earlier commits/tags still contain their published bytes and no redistribution permission is inferred.
+
+The Stage A implementation now reports relative MAE against persistence on identical origins and secondary price MAPE. Regime inputs and bootstrap inputs reject non-finite values. DM diagnostics use Bartlett HAC with max(h−1, floor(4(n/100)^(2/9))) lags, instead of assuming zero residual serial dependence at horizon 1. These are declared implementation changes, not evidence of superiority. [HAC documentation](https://www.statsmodels.org/stable/generated/statsmodels.stats.sandwich_covariance.cov_hac.html). Attention, EnbPI, feature selection and full-study inference remain pending.

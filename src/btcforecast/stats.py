@@ -21,7 +21,8 @@ def holm(pvalues: list[float]) -> list[float]:
 def block_bootstrap_mean(values: list[float], block: int = 30,
                          samples: int = 1000, seed: int = 42) -> tuple[float, float]:
     """Circular fixed-block bootstrap, not the stationary bootstrap."""
-    if len(values) < 2 * block or block < 1 or samples < 40:
+    if (len(values) < 2 * block or block < 1 or samples < 40
+            or any(not math.isfinite(value) for value in values)):
         raise ValueError("Insufficient data or bootstrap samples")
     rng, n = random.Random(seed), len(values)
     estimates = []
@@ -35,25 +36,29 @@ def block_bootstrap_mean(values: list[float], block: int = 30,
     return estimates[int(0.025 * (samples - 1))], estimates[int(0.975 * (samples - 1))]
 
 
-def dm_test(differences: list[float], horizon: int) -> dict:
-    """Bartlett HAC, Harvey correction, Student-t reference; require enough origins."""
+def dm_test(differences: list[float], horizon: int, hac_lags: int | None = None) -> dict:
+    """Bartlett HAC, Harvey correction, Student-t diagnostic on ordered matched losses."""
     from scipy.stats import t
 
     n = len(differences)
-    if horizon < 1 or n < max(50, 5 * horizon):
+    if (horizon < 1 or n < max(50, 5 * horizon)
+            or any(not math.isfinite(value) for value in differences)):
         raise ValueError("Too few matched origins for the declared accuracy test")
+    lags = max(horizon - 1, math.floor(4 * (n / 100) ** (2 / 9))) if hac_lags is None else hac_lags
+    if not isinstance(lags, int) or not horizon - 1 <= lags < n:
+        raise ValueError("HAC lag count must cover overlap and remain below the sample size")
     mean = statistics.mean(differences)
     centred = [value - mean for value in differences]
     variance = sum(x * x for x in centred) / n
-    for lag in range(1, horizon):
+    for lag in range(1, lags + 1):
         covariance = sum(centred[i] * centred[i - lag] for i in range(lag, n)) / n
-        variance += 2 * (1 - lag / horizon) * covariance
+        variance += 2 * (1 - lag / (lags + 1)) * covariance
     if variance <= 0:
         raise ValueError("Non-positive HAC variance")
     correction = math.sqrt((n + 1 - 2 * horizon + horizon * (horizon - 1) / n) / n)
     statistic = mean / math.sqrt(variance / n) * correction
     return {"statistic": statistic, "pvalue": float(2 * t.sf(abs(statistic), n - 1)),
-            "n": n, "hac_lags": horizon - 1, "assumptions": "asymptotic, dependent losses"}
+            "n": n, "hac_lags": lags, "assumptions": "asymptotic, dependent losses"}
 
 
 def coverage_tests(misses: list[int], alpha: float) -> dict:

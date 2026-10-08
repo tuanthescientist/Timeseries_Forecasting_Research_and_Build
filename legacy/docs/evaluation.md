@@ -21,4 +21,4 @@ MAE, RMSE and price MAPE describe the errors on the recorded segments. They do n
 5. Report all windows, per-horizon errors, seed variability and regime-specific performance. Distinguish training diagnostics from held-out errors.
 6. Evaluate interval coverage and width as a new experiment before presenting uncertainty claims for the primary projects.
 
-These are proposed improvements, not changes to the saved model results. The original project code and outputs remain visible. The [supplementary study](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/research/btc-interval-calibration/legacy/docs/supplementary/README.md) contains optional evaluation infrastructure; its tests do not certify the primary notebooks.
+These are proposed improvements, not changes to the saved model results. The original project code and outputs remain visible. The [supplementary study](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/legacy/docs/supplementary/README.md) contains optional evaluation infrastructure; its tests do not certify the primary notebooks.

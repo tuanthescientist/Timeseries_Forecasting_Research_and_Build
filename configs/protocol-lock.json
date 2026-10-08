@@ -1,26 +1,31 @@
 {
   "schema_version": 1,
   "scope": "foundation_design_only",
-  "design_tag": "protocol-v1",
+  "design_tag": "protocol-v1.1",
   "publication_date": "2026-10-08",
   "base_commit": "eb1eac0d4fc70e42eba3be0aa07b5b24198d8c63",
-  "sha256": "5d0fbf7ad1091abafe7a88ba0a7895d8b38f25dd72c156c8baea6355da47441e",
-  "commit_identity": "Resolve protocol-v1^{commit}; a commit cannot contain its own resulting hash.",
+  "sha256": "2d5749773b4546e7ccc62a344161368c65f625047d4a50a97fefcf36f0d3aa02",
+  "commit_identity": "Resolve protocol-v1.1^{commit}; parent protocol-v1 remains immutable.",
   "artifacts": {
-    "configs/btc.json": "6a1227fa58abe78b17efd01aa4ca2fadadd95c9857df1f34d644e77659a61541",
-    "docs/protocol.md": "f0490a4787a7035b92b61170a0c8300a90466ef0f2eeee6eb1d6b923cd883264",
-    "docs/preregistration.md": "0ce0ed5209e94c216f1e92327238405f26693709292a1ae483752b9cfbc4f25a",
+    "configs/btc.json": "b50b98803758c23685db6122d362ad76aa856768cc4a3b480e63ec90879e650f",
+    "docs/protocol.md": "674b65e59841998ea8470b5711ebfc2d105252513c0c5b429e82584d8d71f632",
+    "docs/preregistration.md": "e105a50a656b80311b0827c4946f55f042bbdc92d197ce36626da0cc710f2fd1",
     "docs/decisions/0001-target-low.md": "7a0ec17e1cd028b022cf5ff96d91eb4629263fb7f54dcbcabe030ae4b2921058",
     "docs/decisions/0002-volatility-groups.md": "cde63608109a6bcfd911c94d27a7e74a2d8fece9f37310fe702fd2dbccf22eee",
     "src/btcforecast/baselines.py": "5fa77a7019fe4ab0c50049c10b68bed58585cad89de5afc5cc567973b74d18c7",
     "src/btcforecast/conformal.py": "84baf96fd1ceb7c34ef9c61f397184090623b92f1b56ebe08618c618c1a042e5",
     "src/btcforecast/data.py": "5029123061daab1e4883d2be5fab6f33fd4061a7a1ea87f32e5f34529e77fb58",
-    "src/btcforecast/evaluation.py": "3c8ca53f386a5477a0fa0b6268d59a87c286c6515b3b10013ef8d5ac013551ae",
+    "src/btcforecast/evaluation.py": "d3a7b3f105082a994715c7d685af235f6c7ea85d074d4514c66f22a52377768c",
     "src/btcforecast/experiments.py": "8e4fa4c411536d7011b02076b391a370972886720ddbc774df926e50495f6954",
     "src/btcforecast/models.py": "5ef85a6b919850a1e328155f1d4595e7984ba5d16bc3ff252a5bd6c0c9f550b8",
     "src/btcforecast/protocol.py": "c17ea414d4260021cddb35ad933752e19b5480f4fabf56a41731243af167b108",
-    "src/btcforecast/regimes.py": "c7a72377a049e53c66dbebe8592e7779e53f2e68ca0ff72b32e02c031a4afe38",
-    "src/btcforecast/stats.py": "a0985e15676dfd6e91030997c7eba0b2a9e77167e2e576494c336da141939689",
-    "src/btcforecast/__init__.py": "c35dc86829d11a589e2e758d2307b89201ab33d19a9f3a5598c8d6ce19937a3c"
-  }
+    "src/btcforecast/regimes.py": "8aadb1b635ebc3ff5779fd383cb77eb8aaf4f97568f9983f4036df1fc9bd3250",
+    "src/btcforecast/stats.py": "fd7b8c4177564591c1a41d20710f6401bbd21a1f591372fb2c785f54a8bce8ed",
+    "src/btcforecast/__init__.py": "c35dc86829d11a589e2e758d2307b89201ab33d19a9f3a5598c8d6ce19937a3c",
+    "docs/amendments/amendment-001.md": "a8bd531bc5d3dc649b8b08238ae418bc673f9e04d6c93788d23cb51824504661",
+    "scripts/check_repository.py": "eed6d7bfd5c0ef61ba8884f8cda6ddd546ad5eefd1befeed94d9d0e811689f6b",
+    "scripts/acquire_btc_snapshot.py": "95d1ec1f46b41f1b1bbbc52b771d7851931420033ac35ac83a258cbb0bb37c73"
+  },
+  "parent_tag": "protocol-v1",
+  "parent_commit": "5243f3a46fe5c6f8efe3ccffe3edc040383a6170"
 }
