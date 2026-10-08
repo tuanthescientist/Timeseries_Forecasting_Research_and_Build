@@ -1,6 +1,6 @@
 # Literature reading map
 
-The [full bibliography](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/docs/proposals/PhD_Research_Proposal.md#references) contains 23 sources. Numbers below refer to that bibliography.
+The [full bibliography](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/research/btc-interval-calibration/legacy/docs/proposals/PhD_Research_Proposal.md#references) contains 23 sources. Numbers below refer to that bibliography.
 
 | Priority | Sources | Research decision |
 | --- | --- | --- |
