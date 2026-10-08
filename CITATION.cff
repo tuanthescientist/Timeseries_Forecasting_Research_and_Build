@@ -3,8 +3,8 @@ message: "Please cite the repository and exact commit; foundation code is not co
 title: "BTC Forecasting and Interval Calibration"
 type: software
 authors:
-  - family-names: Tran
-    given-names: Tuan
+  - family-names: "Trần"
+    given-names: "Anh Tuân"
 repository-code: "https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build"
 license: MIT
 version: 0.3.0

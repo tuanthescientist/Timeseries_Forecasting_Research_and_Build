@@ -9,7 +9,7 @@ description = "Auditable BTC daily-Low forecasting and delayed-feedback interval
 readme = "README.md"
 requires-python = ">=3.11"
 license = {text = "MIT"}
-authors = [{name = "Tuan Tran"}]
+authors = [{name = "Trần Anh Tuân"}]
 dependencies = []
 
 [project.optional-dependencies]

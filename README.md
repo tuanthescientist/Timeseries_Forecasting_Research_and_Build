@@ -2,7 +2,7 @@
 
 **Research question:** How do forecast horizon, volatility change and delayed feedback affect the accuracy and uncertainty of BTC-USD daily-Low forecasts?
 
-The project develops an auditable evaluation protocol around one instrument and one target. Maintained by [Tuan Tran](https://github.com/tuanthescientist). The original TensorFlow attention notebook provides practical preparation; Stage A now reports simple baseline evidence; neural and interval comparisons remain pending.
+The project develops an auditable evaluation protocol around one instrument and one target. Maintained by [Trần Anh Tuân](https://github.com/tuanthescientist). The original TensorFlow attention notebook provides practical preparation; Stage A now reports simple baseline evidence; neural and interval comparisons remain pending.
 
 | Component | Current status |
 | --- | --- |

@@ -6,7 +6,7 @@ A forecasting portfolio built around three original notebooks: **VN30 with Neura
 
 The research direction is to ask **when forecast accuracy survives matching baselines and horizons, and how prediction intervals respond to changing volatility**. The notebooks provide practical preparation; the proposal defines the experiments needed to answer those questions.
 
-Maintained by [Tuan Tran](https://github.com/tuanthescientist). MIT licensed code. These are exploratory projects that demonstrate implementation and evaluation experience; the saved metrics have different targets and evaluation designs.
+Maintained by [Trần Anh Tuân](https://github.com/tuanthescientist). MIT licensed code. These are exploratory projects that demonstrate implementation and evaluation experience; the saved metrics have different targets and evaluation designs.
 
 ## Review the portfolio
 

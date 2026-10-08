@@ -3,8 +3,8 @@ message: "If you use this software, please cite the repository and the exact com
 title: "Financial Time-Series Forecasting: Three Notebook Projects"
 type: software
 authors:
-  - family-names: Tran
-    given-names: Tuan
+  - family-names: "Trần"
+    given-names: "Anh Tuân"
 repository-code: "https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build"
 license: MIT
 version: 0.2.0

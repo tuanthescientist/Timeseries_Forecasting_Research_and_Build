@@ -1,6 +1,6 @@
 # Reliable Financial Forecasting Across Horizons and Volatility Regimes
 
-Proposed doctoral research · Trần Anh Tuấn · 8 October 2026
+Proposed doctoral research · Trần Anh Tuân · 8 October 2026
 
 This proposal builds on three original forecasting notebooks in the [repository](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/legacy/README.md). Existing project results are summarised in [preliminary results](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/legacy/docs/preliminary_results.md). The [Word copy](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/legacy/docs/proposals/PhD_Research_Proposal_Tran_Anh_Tuan.docx) contains the same substantive text. The common benchmark and new calibration methods below are proposed work.
 

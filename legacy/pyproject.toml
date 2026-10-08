@@ -9,7 +9,7 @@ description = "Rolling-origin evaluation, persistence baselines and conformal pr
 readme = "README.md"
 requires-python = ">=3.11"
 license = {text = "MIT"}
-authors = [{name = "Tuan Tran"}]
+authors = [{name = "Trần Anh Tuân"}]
 dependencies = [
     "numpy>=1.26,<3",
     "pandas>=2.2",
