@@ -10,7 +10,7 @@ Prediction errors arrive late. For a thirty-day forecast, an adaptive calibrator
 
 The original notebook gave me a concrete starting point: 3.40% MAPE over thirty rolling one-step predictions. Reading that number alongside the forecast construction reveals a distinction that matters for this proposal. Each one-step prediction uses newly observed history. I therefore treat the saved result as implementation experience and make horizon alignment a condition of the new comparison. Stage A sharpens that decision. Persistence beats geometric drift in descriptive MAE at all four horizons, even though drift is a plausible extrapolation of recent price growth. I retain that result because it sets a useful standard for the attention model: complexity has to improve the same task, on the same origins, before its apparent accuracy becomes persuasive.
 
-Feedback takes time. At origin t, a one-day error becomes observable at t+1, whereas a thirty-day error arrives at t+30, 29 days later than the one-day error. I want to measure whether a calibrator can respond to a volatility transition while so much of its recent forecast history is still unresolved. Sustained undercoverage is the hypothesis this interval evaluation will test.
+Feedback takes time. At origin t, a one-day error becomes observable at t+1, whereas a thirty-day error arrives at t+30, 29 days later than the one-day error. The experiment asks whether a calibrator can respond to a volatility transition while much of its recent forecast history is still unresolved. Sustained undercoverage is the hypothesis this interval evaluation will test.
 
 I focus on BTC Low because it connects directly to the original implementation and gives the comparison a single target. It is the vendor-reported minimum of a UTC daily bar, not an executable trading price. I keep VN30 and BID as earlier work rather than pooling their different targets, calendars and saved evaluation designs into this claim. Close and intraday realised variance could support later target comparisons.
 
@@ -66,13 +66,13 @@ Third, delayed ACI updates its effective miscoverage level when an issued interv
 
 The financial comparator is a constant-mean GARCH(1,1) with standardised Student-t innovations fitted to Low-log changes. Simulated cumulative changes are transformed back into Low-price intervals at each horizon. This gives a target-matched comparison with explicit variance dynamics. EnbPI provides a separate established conformal comparator.
 
-I will examine these mechanisms first under synthetic volatility shifts and then on BTC. Ablations compare absolute and volatility-scaled scores, and fixed and adaptive levels. Pooling different horizons is only a labelled stress test. It cannot substitute for the primary horizon-specific comparison.
+Synthetic volatility shifts will isolate these mechanisms before the BTC evaluation. Ablations compare absolute and volatility-scaled scores, and fixed and adaptive levels. Pooling different horizons is only a labelled stress test. It cannot substitute for the primary horizon-specific comparison.
 
 ## 5. Evaluation and decision rules
 
 Training: 2014-09-17–2021-12-31; validation: 2022-01-01–2023-06-30; calibration: 2023-07-01–2023-12-31; retrospective evaluation: 2024-01-01–2026-09-30. Fitting labels must be observed and scored endpoints stay within their stage. The unscored preparation bridge is 2026-10-01–2027-01-31. The conditional future window is 2027-02-01–2027-07-30 under [Amendment 001](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/docs/amendments/amendment-001.md). Historical data and Stage A have already been inspected.
 
-I retain persistence and 252-day geometric drift as the point baselines. Direct and recursive attention are compared at matching horizons, with rolling one-step evaluated at h=1. The specified windows are 90 and 180 days; seeds are 42, 123 and 2026, with refits every 30 days. Selection uses validation mean relative MAE.
+The comparison retains persistence and 252-day geometric drift as the point baselines. Direct and recursive attention are compared at matching horizons, with rolling one-step evaluated at h=1. The specified windows are 90 and 180 days; seeds are 42, 123 and 2026, with refits every 30 days. Selection uses validation mean relative MAE.
 
 The full attention specification must fix causal features, architecture, early stopping, realised training-label access and seed aggregation before Stage B. Point metrics are MAE, RMSE, fixed-training MASE, relative MAE and secondary price MAPE.
 
@@ -121,7 +121,7 @@ Drift does not improve descriptive MAE. This motivates a demanding baseline for 
 
 **The expected contribution is a controlled empirical account of how horizon-dependent feedback delay and volatility scaling jointly determine calibration, sharpness and persistent interval failures for BTC daily-Low forecasts.**
 
-I want to explain the failures. The experiment separates point-model, scaling and adaptation effects and identifies their failure conditions. Any later algorithmic innovation must be justified by these findings and compared with established adaptive methods. Negative results remain useful when they explain failed assumptions or unchanged benchmark rankings.
+The experiment separates point-model, scaling and adaptation effects and identifies their failure conditions. Any later algorithmic innovation must be justified by these findings and compared with established adaptive methods. Negative results remain useful when they explain failed assumptions or unchanged benchmark rankings.
 
 Risks include sparse regimes, dependent outcomes, noisy volatility proxies, unstable neural/GARCH fits and an incomplete future-window freeze. Prioritise matched baselines and the eight-comparison interval family. Optional comparators can be deferred before the final freeze. Changes to core requirements require a documented design amendment. If the attention specification is incomplete by 31 October, I will postpone Stage B until it is frozen and revise downstream dates, including the future window through an amendment if needed.
 
@@ -138,6 +138,22 @@ Stage A is complete; neural, interval and future evaluations are the remaining w
 | 5. Review and freeze | 16–31 January 2027 | Complete A–D review and published full-study lock before 1 February UTC |
 | 6. Conditional future evaluation | 1 February–30 July 2027 | Frozen forecast/update rules; endpoint analysis after all outcomes close |
 | 7. Interpretation and doctoral development | August–September 2027 | Final comparisons, limitations and supervisor-led extension |
+
+### Compute budget and feasibility
+
+A full-grid planning scenario has 34 fit rounds, including the initial fit, over approximately 1,000 origins with refits every 30 days. Two windows × three seeds × six fits per round gives **34 × 2 × 3 × (4 direct + 1 recursive + 1 rolling) = 1,224 neural fits**. This assumes separate direct models for four horizons and independent recursive/rolling fits. If their training specifications are identical, reusing the same one-step model reduces the count to 1,020. Such reuse requires an explicit specification.
+
+The following are illustrative timing scenarios, not measured runtimes. They assume a constant mean fit duration and serial execution on one training device.
+
+| Assumed mean time per fit | Training time for 1,224 fits | Continuous device-days |
+| --- | ---: | ---: |
+| 5 minutes | 102 hours | 4.25 |
+| 15 minutes | 306 hours | 12.75 |
+| 30 minutes | 612 hours | 25.50 |
+
+This full-grid scenario budgets both windows; validation-based selection may reduce the final evaluation grid. It excludes validation searches, warm calibration fits, feature ablations, failed-run retries, inference, GARCH and future-period refits. Their costs must be added before allocating resources. Parallel execution depends on device availability and memory, so no speed-up is assumed.
+
+A validation-only timing pilot will record hardware, sample size, window, batch size, epochs, stopping rule, wall time and peak memory. The resulting measurements will replace these scenarios at the 16 October review. If the budget exceeds available compute or the deadline, optional experiments will be deferred before the full-study freeze, or the schedule will move through an amendment.
 
 The attention specification is the immediate bottleneck. Features, training-label availability and seed aggregation still need to be settled. On 16 October, I will review the specification checklist, available compute and a validation-only estimate of training cost and seed variability. That review will determine whether the 31 October target is feasible.
 
@@ -223,17 +239,31 @@ mean width $\bar W_G=|G|^{-1}\sum_{t\in G}(U-L)$, and mean interval score.
 
 ### B.2 Blocks and joint decisions
 
-Blocks start at the first common eligible origin and are scored after all endpoints mature. Incomplete blocks are excluded and counted. Overlapping outcomes still make these block summaries dependent. Undefined width ratios, insufficient group counts or too few blocks are inconclusive; infinite proposed-method width fails the finite-width criterion.
+**Block construction.** Blocks begin at the first common eligible origin. Score each block after all endpoints mature. Exclude and count incomplete blocks. Overlapping outcomes still make block summaries dependent.
 
-Report support separately for each horizon/level only when all criteria hold. Benefit across all horizons/levels requires all eight to satisfy them. Report every component when the joint criterion fails.
+**Inconclusive cases.** Undefined width ratios, insufficient group counts or too few blocks yield insufficient evidence. An infinite width for the proposed method instead fails the finite-width criterion.
 
-- **Decision margins:** The 5-point coverage tolerance and 10% width allowance are proposed design choices. Assess their precision on validation and synthetic shifts, then freeze them before Stage B.
-- **Sensitivity:** Coverage tolerances of 2/10 percentage points, width ratios of 1.05/1.20 and block lengths of 30/90 are descriptive alternatives. They cannot replace a failed primary criterion.
-- **Future-window limits:** The 180-day window may contain too few group observations or complete blocks, especially at h=30. Report insufficient evidence rather than relaxing criteria after observing outcomes.
+**Joint support.** Every criterion must hold for a horizon/level to receive support. A benefit across all horizons/levels requires all eight assessments to pass. Report each component even when the joint criterion fails.
+
+**Decision margins.** The 5-point coverage tolerance and 10% width allowance are proposed design choices. Assess precision on validation and synthetic shifts, then freeze the margins before Stage B.
+
+**Sensitivity analysis.** Use coverage tolerances of 2/10 percentage points, width ratios of 1.05/1.20 and block lengths of 30/90 as descriptive alternatives. These results cannot replace a failed primary criterion.
+
+**Future-window limits.** The 180-day window may contain too few group observations or complete blocks, especially at h=30. Report insufficient evidence rather than relaxing criteria after observing outcomes.
 
 ### B.3 Dependent losses and multiplicity
 
-The primary family compares volatility-scaled delayed ACI with volatility-scaled rolling interval score. Holm adjustment controls familywise error at 5%. Circular block bootstrap uses 30-day blocks, with sensitivity at 15/60 days. The Bartlett-HAC DM diagnostic follows Amendment 001, with minimum sample size max(50,5h). Freeze the exact test construction and treatment of infinite scores before inference; undefined finite-mean comparisons are inconclusive. Kupiec [24] and Christoffersen [25] are secondary miss-rate/dependence diagnostics. Overlapping horizons prevent interpreting outcomes as independent Bernoulli trials; report non-overlapping-origin sensitivity and its sample-size limitations. Trading profitability is outside scope.
+**Primary family.** Compare volatility-scaled delayed ACI with volatility-scaled rolling interval score across four horizons and two levels. Holm adjustment targets familywise error at 5%, subject to valid component tests.
+
+**Resampling.** Circular block bootstrap uses 30-day blocks. Repeat with 15-day and 60-day blocks to assess sensitivity to the dependence approximation.
+
+**Predictive-accuracy diagnostic.** The Bartlett-HAC DM diagnostic follows Amendment 001. Its minimum sample size is max(50,5h).
+
+**Undefined comparisons.** Freeze the test construction and treatment of infinite scores before inference. A comparison with undefined finite means is inconclusive.
+
+**Coverage diagnostics.** Kupiec [24] assesses miss frequency; Christoffersen [25] examines dependence in the hit sequence. Treat both as secondary diagnostics. Overlapping horizons prevent an independent-Bernoulli interpretation. Report non-overlapping-origin sensitivity alongside its reduced sample size.
+
+Trading profitability is outside scope.
 
 ## References
 
