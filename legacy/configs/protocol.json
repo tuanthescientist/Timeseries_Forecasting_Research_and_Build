@@ -1,0 +1,8 @@
+{
+  "VN30": {"validation_start": "2018-01-01", "test_start": "2023-01-01", "horizons": [1, 5, 20],
+           "refit_every": 20, "min_train": 750, "train_window": null},
+  "BID":  {"validation_start": "2019-01-01", "test_start": "2023-01-01", "horizons": [1, 5, 20],
+           "refit_every": 20, "min_train": 750, "train_window": null},
+  "DEMO": {"validation_start": "2010-01-01", "test_start": "2013-01-01", "horizons": [1, 5, 20],
+           "refit_every": 20, "min_train": 750, "train_window": null}
+}

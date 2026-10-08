@@ -1,22 +1,22 @@
 cff-version: 1.2.0
-message: "If you use this software, please cite the repository and the exact commit."
-title: "Financial Time-Series Forecasting: Three Notebook Projects"
+message: "Please cite the repository and exact commit; foundation code is not completed BTC evidence."
+title: "BTC Forecasting and Interval Calibration"
 type: software
 authors:
   - family-names: Tran
     given-names: Tuan
 repository-code: "https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build"
 license: MIT
-version: 0.2.0
-date-released: 2026-10-07
+version: 0.3.0
+date-released: 2026-10-08
 abstract: >-
-  Three original financial forecasting workflows: VN30 with NeuralProphet, Bitcoin
-  daily Low with a TensorFlow attention model, and BID with scikit-learn ExtraTrees.
-  Saved forecasts, error metrics and evaluation limitations are documented. A separate
-  supplementary study provides rolling-origin and interval-calibration infrastructure.
+  BTC-USD daily-Low forecasting foundations with explicit horizon alignment,
+  train-only volatility regimes and delayed-feedback interval calibration.
+  The original attention notebook is archived; no new BTC research results
+  or prospective evaluation are claimed.
 keywords:
+  - bitcoin
   - time-series forecasting
-  - neuralprophet
-  - tensorflow
-  - scikit-learn
-  - financial time series
+  - conformal prediction
+  - delayed feedback
+  - reproducibility

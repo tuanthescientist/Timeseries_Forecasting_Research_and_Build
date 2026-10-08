@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "datasets": {
+    "BTC": {
+      "status": "not_acquired",
+      "path": "data/raw/btc_usd_daily.csv",
+      "source": "Yahoo Finance via yfinance",
+      "source_url": "https://finance.yahoo.com/quote/BTC-USD/history/",
+      "retrieved_at_utc": null,
+      "sha256": null,
+      "rows": null,
+      "first_date": null,
+      "last_date": null,
+      "original_snapshot_recovered": false
+    },
+    "DEMO": {
+      "status": "locked",
+      "path": "data/demo/btc_daily.csv",
+      "source": "deterministic synthetic OHLCV",
+      "synthetic": true,
+      "sha256": "f21f9ce4e433c294227f8f86c8b8b611e1022fb8683a694ab752e91db08980ba",
+      "rows": 600,
+      "first_date": "2020-01-01",
+      "last_date": "2021-08-22"
+    }
+  },
+  "archived_notebook": {
+    "path": "notebooks/archive/btc-low-forecast-tensorflow.ipynb",
+    "source_commit": "eb1eac0d4fc70e42eba3be0aa07b5b24198d8c63",
+    "sha256": "f77e5cb36c90a0ed237d7f00dc1d6d5a00f3a9f76f7ce8b6c3b31b9fc5059df0"
+  },
+  "historical_market_files": [
+    "legacy/data/raw/vn30.csv",
+    "legacy/data/raw/bid.csv"
+  ]
+}
