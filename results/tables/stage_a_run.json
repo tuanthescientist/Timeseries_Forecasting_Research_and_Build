@@ -1,0 +1,27 @@
+{
+  "stage": "A",
+  "dataset": "BTC",
+  "synthetic": false,
+  "protocol_sha256": "2d5749773b4546e7ccc62a344161368c65f625047d4a50a97fefcf36f0d3aa02",
+  "commit": "7c769b8c7b8e835777dd24dc30a4d6f826c4a49c",
+  "created_at_utc": "2026-10-08T09:38:15.822777+00:00",
+  "snapshot_sha256": "e17858686ed88e2d8ac4a02aabb2ea5eec250062d68e78cfc8105b46e9381110",
+  "status": "completed_baseline_only",
+  "attention_compared": false,
+  "enbpi_compared": false,
+  "proposed_adaptation_compared": false,
+  "artifacts": {
+    "point_metrics.csv": "7ad54082cd607d733dcec29a3f882d0ef3604a64deaecb852eacee8fddeb861f",
+    "point_predictions.csv": "435b25183083af5edd022dab9e0f75e1d8b5a3ae32d76d3e564f88f951dd6517"
+  },
+  "raw_predictions_public": false,
+  "evaluation_period": [
+    "2024-01-01",
+    "2026-09-30"
+  ],
+  "interpretation": "Retrospective baseline evidence; no attention or interval superiority established",
+  "artifact_hash_scope": "artifacts hashes identify local run bytes, including CSV CRLF; published_artifacts identifies LF-normalised tracked aggregates",
+  "published_artifacts": {
+    "results/tables/stage_a_point_metrics.csv": "c6cfac96c79b18b12ea158ae810bff177c74921c4bc5d72135e6915af43288c0"
+  }
+}

@@ -1,20 +1,44 @@
 {
   "schema_version": 1,
-  "design_version": "1.0",
-  "design_tag": "protocol-v1",
+  "design_version": "1.1",
+  "design_tag": "protocol-v1.1",
   "publication_date": "2026-10-08",
   "task": "BTC-USD daily Low endpoint forecasting",
   "target": "low",
-  "horizons": [1, 5, 20, 30],
+  "horizons": [
+    1,
+    5,
+    20,
+    30
+  ],
   "information_at_origin": "UTC day t has closed; use observations through t only",
   "splits": {
-    "training": ["2014-09-17", "2021-12-31"],
-    "validation": ["2022-01-01", "2023-06-30"],
-    "calibration": ["2023-07-01", "2023-12-31"],
-    "retrospective_evaluation": ["2024-01-01", "2026-09-30"]
+    "training": [
+      "2014-09-17",
+      "2021-12-31"
+    ],
+    "validation": [
+      "2022-01-01",
+      "2023-06-30"
+    ],
+    "calibration": [
+      "2023-07-01",
+      "2023-12-31"
+    ],
+    "retrospective_evaluation": [
+      "2024-01-01",
+      "2026-09-30"
+    ],
+    "preparation_bridge": [
+      "2026-10-01",
+      "2027-01-31"
+    ]
   },
   "label_rule": "origin+h must be within its stage; labels used for fitting/calibration must be observed",
-  "baseline_models": ["persistence", "log_drift_252"],
+  "baseline_models": [
+    "persistence",
+    "log_drift_252"
+  ],
   "additional_models_status": {
     "attention": "original notebook archived; audited export required",
     "ets_arima": "planned secondary comparator",
@@ -22,21 +46,48 @@
     "proposed_adaptation": "not implemented"
   },
   "attention_selection": {
-    "strategies": ["rolling_one_step", "direct", "recursive"],
-    "window_days": [90, 180],
-    "seeds": [42, 123, 2026],
+    "strategies": [
+      "rolling_one_step",
+      "direct",
+      "recursive"
+    ],
+    "window_days": [
+      90,
+      180
+    ],
+    "seeds": [
+      42,
+      123,
+      2026
+    ],
     "selection_metric": "validation mean relative MAE across horizons",
     "refit_every": 30,
     "feature_status": "freeze exact causal feature set in amendment before model comparison"
   },
-  "metrics": ["MAE", "RMSE", "MASE", "relative_MAE_vs_persistence", "secondary_price_MAPE"],
+  "metrics": [
+    "MAE",
+    "RMSE",
+    "MASE",
+    "relative_MAE_vs_persistence",
+    "secondary_price_MAPE"
+  ],
   "mase_denominator": "one-day absolute Low differences fitted on initial training only",
   "intervals": {
-    "methods": ["static", "rolling", "aci"],
-    "alphas": [0.2, 0.05],
+    "methods": [
+      "static",
+      "rolling",
+      "aci"
+    ],
+    "alphas": [
+      0.2,
+      0.05
+    ],
     "window": 500,
     "aci_gamma": 0.005,
-    "normalisation": ["absolute", "origin_low * trailing_volatility * sqrt(h)"],
+    "normalisation": [
+      "absolute",
+      "origin_low * trailing_volatility * sqrt(h)"
+    ],
     "feedback_rule": "origin_j + h <= current_origin; never pool horizons",
     "quantile_rule": "ceil((n+1)*(1-alpha))-th score; infinity when rank exceeds n"
   },
@@ -50,16 +101,20 @@
     "primary_family": "ACI normalised versus rolling normalised interval score: four horizons x two levels",
     "multiplicity": "Holm within eight primary comparisons",
     "bootstrap_block_days": 30,
-    "bootstrap_sensitivity": [15, 60],
+    "bootstrap_sensitivity": [
+      15,
+      60
+    ],
     "bootstrap_samples": 1000,
     "bootstrap_seed": 42,
     "dm_minimum_origins": "max(50, 5*h)",
-    "coverage_tests": "Kupiec/Christoffersen as assumption-sensitive diagnostics only"
+    "coverage_tests": "Kupiec/Christoffersen as assumption-sensitive diagnostics only",
+    "dm_hac_lags": "max(h-1, floor(4*(n/100)^(2/9))); Bartlett weights; sensitivity required"
   },
   "prospective": {
-    "start": "2026-10-09",
-    "end": "2027-04-06",
-    "status": "planned; no results",
+    "start": "2027-02-01",
+    "end": "2027-07-30",
+    "status": "candidate window; full-study freeze required before 2027-02-01",
     "eligibility": "design tag published before start; BTC snapshot locked; stages A-D frozen before start",
     "late_completion_rule": "if A-D are not frozen before start, publish amendment and a new future window; never backdate",
     "stop_rule": "single endpoint evaluation after all daily outcomes through end have closed"

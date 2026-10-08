@@ -64,3 +64,19 @@ class NoLookaheadTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "future"):
                 load_attention_predictions(path, [{"low": 100}] * 30,
                                            protocol_sha256="expected")
+
+    def test_unmatured_outcomes_cannot_change_issued_intervals(self):
+        from btcforecast.experiments import calibrate
+        for horizon in (1, 5, 20, 30):
+            config = {"horizons": [horizon], "intervals": {"alphas": [0.2],
+                      "methods": ["static", "rolling", "aci"], "window": 50, "aci_gamma": 0.005}}
+            warm = [{"model": "persistence", "horizon": horizon, "origin": i,
+                     "pred": 100, "actual": 101 + i % 3, "origin_low": 100,
+                     "volatility": 0.01} for i in range(40)]
+            current = [{**warm[0], "origin": 100 + i, "actual": 102}
+                       for i in range(horizon + 2)]
+            changed = [{**row, "actual": 10000} for row in current]
+            for a, b in zip(calibrate(warm, current, config),
+                            calibrate(warm, changed, config), strict=True):
+                if a["origin"] < 100 + horizon:
+                    self.assertEqual((a["lower"], a["upper"]), (b["lower"], b["upper"]))

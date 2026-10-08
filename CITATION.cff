@@ -12,8 +12,8 @@ date-released: 2026-10-08
 abstract: >-
   BTC-USD daily-Low forecasting foundations with explicit horizon alignment,
   train-only volatility regimes and delayed-feedback interval calibration.
-  The original attention notebook is archived; no new BTC research results
-  or prospective evaluation are claimed.
+  The original attention notebook is archived; retrospective Stage A baseline
+  evidence is available. Neural superiority and prospective evidence remain pending.
 keywords:
   - bitcoin
   - time-series forecasting

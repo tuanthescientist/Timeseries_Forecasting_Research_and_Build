@@ -7,7 +7,8 @@ from dataclasses import dataclass
 
 
 def trailing_volatility(history: list[float], lookback: int = 30) -> float:
-    if len(history) < lookback + 1 or min(history) <= 0:
+    if (not isinstance(lookback, int) or lookback < 1 or len(history) < lookback + 1
+            or any(not math.isfinite(p) or p <= 0 for p in history)):
         raise ValueError("Insufficient positive history")
     values = history[-(lookback + 1):]
     returns = [math.log(b / a) for a, b in zip(values, values[1:], strict=False)]
@@ -16,7 +17,8 @@ def trailing_volatility(history: list[float], lookback: int = 30) -> float:
 
 def quantile(values: list[float], probability: float) -> float:
     values = sorted(values)
-    if not values or not 0 <= probability <= 1:
+    if (not values or not 0 <= probability <= 1
+            or any(not math.isfinite(value) for value in values)):
         raise ValueError("Invalid quantile input")
     position = (len(values) - 1) * probability
     lower, upper = math.floor(position), math.ceil(position)

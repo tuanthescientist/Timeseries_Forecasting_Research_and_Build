@@ -2,7 +2,7 @@
 
 Proposed doctoral research · Trần Anh Tuấn · 8 October 2026
 
-This proposal builds on three original forecasting notebooks in the [repository](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/research/btc-interval-calibration/legacy/README.md). Existing project results are summarised in [preliminary results](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/research/btc-interval-calibration/legacy/docs/preliminary_results.md). The [Word copy](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/research/btc-interval-calibration/legacy/docs/proposals/PhD_Research_Proposal_Tran_Anh_Tuan.docx) contains the same substantive text. The common benchmark and new calibration methods below are proposed work.
+This proposal builds on three original forecasting notebooks in the [repository](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/legacy/README.md). Existing project results are summarised in [preliminary results](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/legacy/docs/preliminary_results.md). The [Word copy](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/legacy/docs/proposals/PhD_Research_Proposal_Tran_Anh_Tuan.docx) contains the same substantive text. The common benchmark and new calibration methods below are proposed work.
 
 ## Abstract
 
@@ -72,7 +72,7 @@ These experiments establish practical preparation and motivate better evaluation
 
 ### 5.1 Data and temporal protocol
 
-The author has confirmed Investing.com as the source of the supplied VN30 and BID CSVs; source pages and hashes appear in the [data card](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/research/btc-interval-calibration/legacy/docs/data.md). Retrieval dates, adjustments and redistribution rights remain to be documented. The supplied 4,426-row VN30 file differs from the 4,408-row NeuralProphet snapshot. Date and OHLC anomalies will be reconciled before freezing research data.
+The author has confirmed Investing.com as the source of the supplied VN30 and BID CSVs; source pages and hashes appear in the [data card](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/legacy/docs/data.md). Retrieval dates, adjustments and redistribution rights remain to be documented. The supplied 4,426-row VN30 file differs from the 4,408-row NeuralProphet snapshot. Date and OHLC anomalies will be reconciled before freezing research data.
 
 For origin t, the primary endpoint is the target at t+h; horizons 1, 5, 20 and 30 are proposed. Equity/index steps will use validated exchange observations; Bitcoin will use daily observations. Endpoint forecasts and full paths will be assessed separately. Price and daily Low are different targets, so pooled MAPE will not establish cross-instrument rankings.
 
