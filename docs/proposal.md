@@ -135,3 +135,7 @@ docs/proposal.md is the single active proposal source. Word is generated on dema
 ## Amendment and evidence boundary
 
 [Amendment 001](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/docs/amendments/amendment-001.md) preserves protocol-v1. Preparation bridge: 2026-10-01–2027-01-31. Candidate future window: 2027-02-01–2027-07-30, conditional on full A–D freeze before its start. [Audit](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/docs/audit-2026-10-08.md). Stage A covers simple baselines; B–D, superiority and prospective evidence remain pending.
+
+## Stage A baseline evidence (8 October 2026)
+
+The real BTC run scores 1,003/999/984/974 origins at h=1/5/20/30. Persistence MAE is USD 1,309.84/3,225.03/6,497.42/8,176.55; drift relative MAE is 1.0005/1.0137/1.0686/1.1017. Drift therefore does not improve descriptive MAE in this period. These are not significance tests and do not compare the archived attention run on different dates. [Tables and provenance](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/results/tables/README.md).
