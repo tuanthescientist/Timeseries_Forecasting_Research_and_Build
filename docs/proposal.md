@@ -4,9 +4,9 @@ Proposed doctoral research · Trần Anh Tuân · 8 October 2026
 
 ## Abstract
 
-A thirty-day forecast cannot supply its error until thirty days have passed. I study what that delay means for BTC daily-Low prediction intervals when volatility changes, holding point forecasts and information access fixed while comparing residual scaling and adaptive updates at horizons of 1, 5, 20 and 30 days. The aim is to identify when adaptation improves coverage and sharpness, and when waiting for feedback makes it ineffective. There is already a concrete baseline to beat: in Stage A, geometric drift has relative MAE of 1.0005, 1.0137, 1.0686 and 1.1017 against persistence at those four horizons.
+Prediction errors arrive late. For a thirty-day forecast, an adaptive calibrator must wait thirty days before learning whether its interval covered the outcome. I investigate how this delay interacts with volatility changes in BTC-USD daily-Low forecasting. The study compares horizon-specific calibration methods using identical point forecasts, separating the effects of volatility scaling, recent residual information and adaptive updates. Attention models are evaluated against persistence and drift; interval comparators include static and rolling calibration, ACI, EnbPI and a target-matched GARCH model. A locked daily snapshot and completed baseline stage provide the empirical starting point. Evaluation combines interval score, coverage by volatility group, mean width and persistent undercoverage, with explicit rules for inconclusive cases. The expected contribution is an empirical account of when delayed adaptation offers a useful coverage–width trade-off and when it fails. Historical results will guide interpretation, while a separately frozen future window will assess the completed design. The proposed combination and its decision margins remain research hypotheses, not established performance claims.
 
-## 1. Motivation and scope
+## 1. Introduction
 
 The original notebook gave me a concrete starting point: 3.40% MAPE over thirty rolling one-step predictions. Reading that number alongside the forecast construction reveals a distinction that matters for this proposal. Each prediction uses newly observed history; the separate recursive path holds other features fixed and is not scored by the same metric. I therefore treat the saved result as implementation experience and make horizon alignment a condition of the new comparison. Stage A sharpens that decision. Persistence beats geometric drift in descriptive MAE at all four horizons, even though drift is a plausible extrapolation of recent price growth. I retain that result because it sets a useful standard for the attention model: complexity has to improve the same task, on the same origins, before its apparent accuracy becomes persuasive.
 
@@ -14,7 +14,9 @@ Feedback takes time. At origin t, a one-day error becomes observable at t+1, whe
 
 I focus on BTC Low because it connects directly to the original implementation and gives the comparison a single target. It is the vendor-reported minimum of a UTC daily bar, not an executable trading price. I keep VN30 and BID as earlier work rather than pooling their different targets, calendars and saved evaluation designs into this claim. Close and intraday realised variance could support later comparisons; I do not assume that Low is intrinsically harder to calibrate without testing that proposition.
 
-## 2. Related work and research gap
+The work has four retrospective stages. Stage A establishes point baselines; Stage B compares attention strategies; Stage C evaluates interval methods; Stage D examines ablations and sensitivity. A later future evaluation tests the completed design on observations unavailable at the freeze.
+
+## 2. Background
 
 Chronological evaluation, matching horizons and suitable losses [1–4] motivate persistence and drift benchmarks. I take the benchmark discipline from financial forecasting evidence [10, 11], rather than treating its exchange-rate and equity-premium findings as a prediction about BTC Low. Attention [13] is a modelling component whose value must be measured under equal information access. NeuralProphet [12] and ExtraTrees [14] represent earlier implementation experience.
 
@@ -24,11 +26,110 @@ ARCH [26] and GARCH [27] motivate an explicit conditional-variance comparator. P
 
 The research gap to investigate is the interaction of horizon-dependent feedback delay and volatility transitions under matched forecasts and information sets. Predictive-accuracy tests [5, 6], multiplicity adjustment [7] and dependent-data resampling [8] inform inference; model confidence sets [9] are optional. Kupiec [24] and Christoffersen [25] provide coverage diagnostics whose assumptions need particular care for overlapping horizons.
 
-## 3. Questions, operational method and hypotheses
+Table 1 distinguishes the role of each comparator. A coverage guarantee for one feedback setting cannot be transferred automatically to delayed multi-horizon forecasts.
 
-**Design status.** I make the foundation mechanism explicit in the equations below. H2 decision margins and the GARCH comparator below are draft additions requiring validation/synthetic feasibility checks and a dated full-study amendment before B–D comparison. They are not settings frozen by protocol-v1.1, and have not been selected using interval results.
+| Method | Updating mechanism | Assumptions and guarantee scope | Question in this study |
+| --- | --- | --- | --- |
+| Static split conformal [17] | Fixed calibration scores | Standard finite-sample marginal coverage uses exchangeable calibration/test scores | How much does a fixed pool deteriorate after a volatility change? |
+| Rolling calibration | Recent realised scores replace older scores | A rolling window alone gives no arbitrary-dependence coverage guarantee | Does recent information suffice without adapting the error level? |
+| ACI [20, 21] | Error feedback adjusts the effective miscoverage level | Long-run frequency control in the specified online setting; not a universal local or conditional guarantee | What changes when feedback arrives h days after issue? |
+| EnbPI [22] | Bootstrap ensemble and sequential residual updates | Approximate marginal coverage under stated regression/error conditions, including strongly mixing errors | Can an established ensemble comparator improve the same task with delayed feedback? |
+| GARCH [26, 27] | Conditional variance filtering and periodic parameter refits | Parametric variance/innovation specification; interval calibration depends on model adequacy | How does a financial volatility model compare on the same Low target? |
 
-### 3.1 Information, scale and groups
+## 3. Research questions and hypotheses
+
+**RQ1.** Which attention strategy improves point accuracy over persistence at a fixed forecast horizon?
+
+**H1.** An attention strategy selected on chronological validation achieves lower mean absolute error than persistence on matched evaluation origins. Support is assessed separately at each horizon, rather than inferred from a pooled score.
+
+Direct and recursive forecasts are compared at the same horizon. Rolling one-step is evaluated only at h=1. Window and feature selection occur before the evaluation period; their search space and seed aggregation will be fixed before Stage B. This distinguishes a forecast-strategy effect from access to newer observations.
+
+**RQ2.** Does volatility-scaled delayed ACI improve interval calibration over volatility-scaled rolling calibration using identical point forecasts?
+
+**H2.** Volatility-scaled delayed ACI lowers mean interval score and persistent undercoverage while meeting the specified group-coverage tolerance and increasing mean width by no more than 10% relative to rolling calibration.
+
+This hypothesis retains the practical width allowance rather than requiring equal width. It asks whether adaptation provides a measurable benefit at a bounded cost. The definitions and joint decision rule appear in Table 2. Each horizon and coverage level receives its own assessment; an improvement at one setting does not support a claim across all settings.
+
+I distinguish failure from insufficient evidence. A method can fail a width or accuracy condition, while too few realised blocks can leave the adaptation claim unresolved. Both outcomes are relevant to the usefulness of a delayed calibrator.
+
+## 4. Method overview
+
+The proposed method combines three components: horizon-specific scores, volatility scaling and delayed ACI. Whether this combination improves on existing methods is the central empirical question. [Appendix A](#appendix-a-method-specification) gives the equations and boundary conventions.
+
+First, each model and horizon maintains its own residual history. A forecast enters that history only when its outcome is observable. At h=30, a forecast issued today therefore cannot affect calibration tomorrow. Keeping the issue and realisation times explicit makes the information available to each comparator comparable.
+
+Second, the volatility-scaled score divides the absolute forecast error by a scale fixed at the forecast origin. That scale combines Low, trailing thirty-day dispersion of Low-log changes and the square root of the horizon. I treat this scaling as an approximation to test. Absolute-residual variants isolate whether it helps beyond using a recent calibration pool.
+
+Third, delayed ACI updates its effective miscoverage level when an issued interval can be scored. Rolling calibration uses the same available scores with a fixed level. Comparing the two on identical point forecasts isolates the contribution of adaptation, while static calibration shows the effect of retaining an unchanged pool.
+
+The financial comparator is a constant-mean GARCH(1,1) with standardised Student-t innovations fitted to Low-log changes. Simulated cumulative changes are transformed back into Low-price intervals at each horizon. This gives a target-matched comparison with explicit variance dynamics. EnbPI provides a separate established conformal comparator.
+
+I will examine these mechanisms first under synthetic volatility shifts and then on BTC. Ablations compare absolute and volatility-scaled scores, and fixed and adaptive levels. Pooling different horizons is only a labelled stress test. It cannot substitute for the primary horizon-specific comparison.
+
+## 5. Evaluation and decision rules
+
+Training: 2014-09-17–2021-12-31; validation: 2022-01-01–2023-06-30; calibration: 2023-07-01–2023-12-31; retrospective evaluation: 2024-01-01–2026-09-30. Fitting labels must be observed and scored endpoints stay within their stage. The unscored preparation bridge is 2026-10-01–2027-01-31. The conditional future candidate is 2027-02-01–2027-07-30 under [Amendment 001](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/docs/amendments/amendment-001.md). Historical data and Stage A have already been inspected.
+
+I retain persistence and 252-day geometric drift so that the attention comparison has the same baseline as Stage A. Compare direct and recursive attention at matching horizons, with rolling one-step as an h=1 task. The foundation specifies candidate windows 90/180, seeds 42/123/2026, refits every 30 days and validation mean relative MAE for selection. Exact causal features, architecture, early stopping, realised training-label access and seed aggregation need a full-study amendment. Record origin, horizon, information cutoff, training-label cutoff, selection cutoff and protocol hash. Report MAE, RMSE, fixed-training MASE, relative MAE and secondary price MAPE.
+
+Table 2 states the proposed H2 criteria. These decision margins will be frozen in a full-study amendment before Stage B, following validation/synthetic feasibility assessment. The margins are design choices rather than literature-established thresholds.
+
+| Criterion | Draft operational definition |
+| --- | --- |
+| Interval accuracy | Negative mean interval-score difference, supported by dependence-aware testing with Holm adjustment over four horizons × two levels |
+| Group calibration | Absolute coverage deviation from nominal at most 5 percentage points in every volatility group with at least 100 paired outcomes |
+| Useful width | Mean ACI width / mean rolling width at most 1.10, overall and within each eligible group |
+| Persistent undercoverage | Coverage below nominal minus 5 percentage points in two adjacent non-overlapping 60-origin blocks |
+| Adaptation benefit | Fewer adjacent block pairs exhibiting persistent undercoverage than rolling; if rolling has none, this benefit is inconclusive |
+
+For H1, improvement requires relative MAE below 1 and a dependence-aware confidence interval for the paired mean absolute-loss difference excluding zero in the favourable direction. The neural comparison family and seed aggregation must be fixed before testing.
+
+For H2, all Table 2 criteria must hold for a horizon/level to receive support. A claim across all four horizons and two levels requires all eight assessments to pass. [Appendix B](#appendix-b-statistical-details) specifies block construction, uncertainty, multiplicity and inconclusive cases.
+
+Public aggregate metrics and run provenance support inspection of the reported results. Independent recomputation requires the exact raw snapshot, which remains local with the full predictions. Vendor revisions may prevent exact restoration; the [data card](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/docs/data_card.md) explains access and provenance.
+
+## 6. Preliminary evidence
+
+The archived TensorFlow notebook uses 180-day windows, positional encoding, two multi-head attention blocks, Conv1D projections, pooling and a dense output. RobustScaler is fitted on training. Thirty rolling one-step predictions report MAPE 3.40%, MAE USD 2,702.68 and RMSE USD 3,138.98. Callbacks monitor training loss without a separate validation segment. A separate recursive path holds other features fixed and is not scored by that MAPE. Original snapshot bytes are unavailable.
+
+The new snapshot has 4,404 daily observations from 2014-09-17 through 2026-10-07, acquired on 8 October 2026. Stage A scores origins in 2024-01-01–2026-09-30 whose endpoints remain inside that period:
+
+| Horizon | Origins | Persistence MAE (USD) | Drift / persistence MAE |
+| --- | ---: | ---: | ---: |
+| 1 | 1,003 | 1,309.84 | 1.0005 |
+| 5 | 999 | 3,225.03 | 1.0137 |
+| 20 | 984 | 6,497.42 | 1.0686 |
+| 30 | 974 | 8,176.55 | 1.1017 |
+
+Drift does not improve descriptive MAE. This motivates a demanding baseline for attention, but is not a significance result or a matched comparison with the archived thirty-day experiment. [Tables and provenance](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/results/tables/README.md).
+
+## 7. Contribution and risks
+
+**The expected contribution is a controlled empirical account of how horizon-dependent feedback delay and volatility scaling jointly determine calibration, sharpness and persistent interval failures for BTC daily-Low forecasts.**
+
+The experiment separates point-model, scaling and adaptation effects and identifies their failure conditions. Any later algorithmic innovation must be justified by these findings and compared with established adaptive methods. Negative results remain useful when they explain failed assumptions or unchanged benchmark rankings.
+
+Risks include sparse regimes, dependent outcomes, noisy volatility proxies, unstable neural/GARCH fits and an incomplete future-window freeze. Prioritise matched baselines and the eight-comparison interval family. Optional comparators can be deferred before the final freeze; core requirements cannot be removed silently to meet a date.
+
+Stage A is complete; neural, interval and future evaluations are the remaining work. Historical inspection makes the completed evaluation retrospective. The future evaluation will test whether any observed benefit persists after the full-study freeze.
+
+## 8. Timeline
+
+| Milestone | Planned dates | Deliverable |
+| --- | --- | --- |
+| 1. Foundation and Stage A | Completed 8 October 2026 | Locked snapshot, baseline table and provenance |
+| 2. Full specification | 9–31 October 2026 | Attention features/training, H2 margins, GARCH and inference details; validation/synthetic feasibility; dated amendment |
+| 3. Stage B | November 2026 | Matched attention forecasts, seeds, selection records and cost |
+| 4. Stages C–D | December 2026–15 January 2027 | Calibration/GARCH comparisons, ablations, group diagnostics and sensitivity |
+| 5. Review and freeze | 16–31 January 2027 | Complete A–D review and published full-study lock before 1 February UTC |
+| 6. Conditional future evaluation | 1 February–30 July 2027 | Frozen forecast/update rules; endpoint analysis after all outcomes close |
+| 7. Interpretation and doctoral development | August–September 2027 | Final comparisons, limitations and supervisor-led extension |
+
+The attention specification is the immediate bottleneck. I still need to settle causal features, training-label availability and seed aggregation; training cost and variation across seeds are feasibility risks to measure, not failures already observed in the new study. The dates above are a workload proposal rather than a demonstrated four-month completion estimate. Any incomplete full-study requirement at the January review triggers a dated amendment reserving a later future window. Outcomes already observed cannot be relabelled prospective.
+
+## Appendix A. Method specification
+
+### A.1 Information, scale and groups
 
 Let $Y_t>0$ denote Low and $\mathcal F_t$ the observations available after day t closes. Forecast $\widehat Y_{t,h}$ uses only $\mathcal F_t$, for $h\in\{1,5,20,30\}$. Define
 
@@ -41,7 +142,7 @@ $$
 
 I use square-root-h scaling as a testable approximation; the ablation will show whether it helps at longer horizons. Training-only terciles $c_1,c_2$ are fitted once to eligible training $v_t$ values, using linear interpolation at sorted positions $(n-1)/3$ and $2(n-1)/3$. Groups are low if $v_t\le c_1$, medium if $c_1<v_t\le c_2$, and high otherwise. Every method uses the same fixed grouping.
 
-### 3.2 Scores, pools, intervals and updates
+### A.2 Scores, pools, intervals and updates
 
 For each model and horizon separately, define
 
@@ -75,7 +176,20 @@ $$
 
 Process matured feedback before issuing the next interval. Use the historical issued threshold, not a recomputed one. The foundation does not clip a. This delayed variant is evaluated empirically; a guarantee for another feedback setting is not automatically inherited.
 
-### 3.3 Scoring and testable hypotheses
+### A.3 GARCH comparator
+
+Fit a constant-mean GARCH(1,1) to the same Low-log changes with standardised Student-t innovations [26, 27]:
+
+$$
+r_t=\mu+\epsilon_t,\qquad \epsilon_t=\sigma_t z_t,\qquad
+\sigma_t^2=\omega+\beta_1\epsilon_{t-1}^2+\beta_2\sigma_{t-1}^2.
+$$
+
+Require $\omega>0,\ \beta_1,\beta_2\ge0,\ \beta_1+\beta_2<1$, unit innovation variance and degrees of freedom above 2. Draft settings are an expanding causal fit, a 30-day refit schedule, daily filtering and 10,000 simulated paths per origin with a fixed recorded seed. Transform each path into $Y_t\exp(\sum_{k=1}^{h}r_{t+k})$, then take alpha/2 and 1−alpha/2 quantiles. This matches the Low target and multi-step variance dynamics. Log convergence failures and paired-sample counts rather than silently dropping failed origins or substituting another model. Solver, initialisation, seed, quantile convention and failure policy must be frozen before implementation. This comparator is proposed, not executed or included in the existing lock.
+
+## Appendix B. Statistical details
+
+### B.1 Metrics
 
 For an interval [L,U] and outcome y, use the central interval score [15]:
 
@@ -89,89 +203,15 @@ Lower is better. Alpha is total two-sided miscoverage and the penalty is $2/\alp
 $\widehat C_G=|G|^{-1}\sum_{t\in G}\mathbf1\{Y_{t+h}\in I_{t,h,\alpha}\}$,
 mean width $\bar W_G=|G|^{-1}\sum_{t\in G}(U-L)$, and mean interval score.
 
-**RQ1 / H1.** Which attention strategy improves point accuracy at each fixed horizon? Improvement requires relative MAE below 1 against persistence and a dependence-aware confidence interval for the paired mean absolute-loss difference excluding zero favourably. Otherwise improvement is not established. Rolling one-step belongs only to h=1. Freeze the neural comparison family and seed aggregation before Stage B.
+### B.2 Blocks and joint decisions
 
-**RQ2 / H2.** Does volatility-normalised delayed ACI improve on volatility-normalised rolling intervals with identical point forecasts? Proposed practical criteria are:
-
-| Criterion | Draft operational definition |
-| --- | --- |
-| Interval accuracy | Negative mean interval-score difference, supported by dependence-aware testing with Holm adjustment over four horizons × two levels |
-| Group calibration | Absolute coverage deviation from nominal at most 5 percentage points in every volatility group with at least 100 paired outcomes |
-| Useful width | Mean ACI width / mean rolling width at most 1.10, overall and within each eligible group |
-| Persistent undercoverage | Coverage below nominal minus 5 percentage points in two adjacent non-overlapping 60-origin blocks |
-| Adaptation benefit | Fewer adjacent block pairs exhibiting persistent undercoverage than rolling; if rolling has none, this benefit is inconclusive |
-
-Blocks start at the first common eligible origin and are scored after all endpoints mature. Incomplete blocks are excluded and counted. Overlapping outcomes still make these block summaries dependent. Undefined width ratios, insufficient group counts or too few blocks are inconclusive; infinite candidate width fails the finite-width criterion.
+Blocks start at the first common eligible origin and are scored after all endpoints mature. Incomplete blocks are excluded and counted. Overlapping outcomes still make these block summaries dependent. Undefined width ratios, insufficient group counts or too few blocks are inconclusive; infinite proposed-method width fails the finite-width criterion.
 
 Report support separately for each horizon/level only when all criteria hold. Benefit across all horizons/levels requires all eight to satisfy them. Report every component when the joint criterion fails. The 5-point and 10% margins are proposed design choices, not established literature thresholds; assess precision on validation and synthetic shifts and freeze any changes before interval evaluation. Sensitivity at 2/10 coverage points, width ratios 1.05/1.20 and block lengths 30/90 is descriptive and cannot replace a failed primary criterion. The 180-day future window may lack enough groups or complete blocks, especially at h=30; do not relax criteria after observing outcomes.
 
-## 4. Preliminary evidence
+### B.3 Dependent losses and multiplicity
 
-The archived TensorFlow notebook uses 180-day windows, positional encoding, two multi-head attention blocks, Conv1D projections, pooling and a dense output. RobustScaler is fitted on training. Thirty rolling one-step predictions report MAPE 3.40%, MAE USD 2,702.68 and RMSE USD 3,138.98. Callbacks monitor training loss without a separate validation segment. A separate recursive path holds other features fixed and is not scored by that MAPE. Original snapshot bytes are unavailable.
-
-The new snapshot has 4,404 daily observations from 2014-09-17 through 2026-10-07, acquired on 8 October 2026. Stage A scores origins in 2024-01-01–2026-09-30 whose endpoints remain inside that period:
-
-| Horizon | Origins | Persistence MAE (USD) | Drift / persistence MAE |
-| --- | ---: | ---: | ---: |
-| 1 | 1,003 | 1,309.84 | 1.0005 |
-| 5 | 999 | 3,225.03 | 1.0137 |
-| 20 | 984 | 6,497.42 | 1.0686 |
-| 30 | 974 | 8,176.55 | 1.1017 |
-
-Drift does not improve descriptive MAE. This motivates a demanding baseline for attention, but is not a significance result or a matched comparison with the archived thirty-day experiment. [Tables and provenance](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/results/tables/README.md).
-
-## 5. Experimental design
-
-**Chronology.** Training: 2014-09-17–2021-12-31; validation: 2022-01-01–2023-06-30; calibration: 2023-07-01–2023-12-31; retrospective evaluation: 2024-01-01–2026-09-30. Fitting labels must be observed and scored endpoints stay within their stage. The unscored preparation bridge is 2026-10-01–2027-01-31. The conditional future candidate is 2027-02-01–2027-07-30 under [Amendment 001](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/docs/amendments/amendment-001.md). Historical data and Stage A have already been inspected.
-
-**Point models.** I retain persistence and 252-day geometric drift so that the attention comparison has the same baseline as Stage A. Compare direct and recursive attention at matching horizons, with rolling one-step as an h=1 task. The foundation specifies candidate windows 90/180, seeds 42/123/2026, refits every 30 days and validation mean relative MAE for selection. Exact causal features, architecture, early stopping, realised training-label access and seed aggregation need a full-study amendment. Record origin, horizon, information cutoff, training-label cutoff, selection cutoff and protocol hash. Report MAE, RMSE, fixed-training MASE, relative MAE and secondary price MAPE.
-
-**Interval competitors.** Use static, rolling and ACI with absolute and scaled scores. EnbPI [22] needs an implemented, validated adapter. Optional ETS/ARIMA and aggregation [23] follow only if resources permit. Freeze the final family before B–D comparisons.
-
-**Proposed financial comparator.** Fit a constant-mean GARCH(1,1) to the same Low-log changes with standardised Student-t innovations [26, 27]:
-
-$$
-r_t=\mu+\epsilon_t,\qquad \epsilon_t=\sigma_t z_t,\qquad
-\sigma_t^2=\omega+\beta_1\epsilon_{t-1}^2+\beta_2\sigma_{t-1}^2.
-$$
-
-Require $\omega>0,\ \beta_1,\beta_2\ge0,\ \beta_1+\beta_2<1$, unit innovation variance and degrees of freedom above 2. Draft settings are an expanding causal fit, a 30-day refit schedule, daily filtering and 10,000 simulated paths per origin with a fixed recorded seed. Transform each path into $Y_t\exp(\sum_{k=1}^{h}r_{t+k})$, then take alpha/2 and 1−alpha/2 quantiles. This matches the Low target and multi-step variance dynamics. Log convergence failures and paired-sample counts rather than silently dropping failed origins or substituting another model. Solver, initialisation, seed, quantile convention and failure policy must be frozen before implementation. This comparator is proposed, not executed or included in the existing lock.
-
-**Mechanism and inference.** I compare absolute/scaled scores and fixed/adaptive levels on identical point forecasts at each horizon. Pooling unlike horizons is only a labelled stress test. Synthetic volatility shifts isolate feedback mechanisms before financial evaluation.
-
-Retain the primary family of normalised ACI versus normalised rolling interval score, Holm control at familywise 5%, circular block bootstrap with 30-day blocks and sensitivity at 15/60, and the amendment's Bartlett-HAC DM diagnostic with minimum sample size max(50,5h). Freeze the exact test construction and treatment of infinite scores before inference; undefined finite-mean comparisons are inconclusive. Kupiec [24] and Christoffersen [25] are secondary miss-rate/dependence diagnostics. Overlapping horizons prevent interpreting outcomes as independent Bernoulli trials; report non-overlapping-origin sensitivity and its sample-size limitations. Trading profitability is outside scope.
-
-## 6. Expected contribution and feasibility
-
-**The expected contribution is a controlled empirical account of how horizon-dependent feedback delay and volatility scaling jointly determine calibration, sharpness and persistent interval failures for BTC daily-Low forecasts.**
-
-The experiment separates point-model, scaling and adaptation effects and identifies their failure conditions. Any later algorithmic innovation must be justified by these findings and compared with established adaptive methods. Negative results remain useful when they explain failed assumptions or unchanged benchmark rankings.
-
-Risks include sparse regimes, dependent outcomes, noisy volatility proxies, unstable neural/GARCH fits and an incomplete future-window freeze. Prioritise matched baselines and the eight-comparison interval family. Optional comparators can be deferred before the final freeze; core requirements cannot be removed silently to meet a date.
-
-## 7. Dated milestones
-
-| Milestone | Planned dates | Deliverable |
-| --- | --- | --- |
-| 1. Foundation and Stage A | Completed 8 October 2026 | Locked snapshot, baseline table and provenance |
-| 2. Full specification | 9–31 October 2026 | Attention features/training, H2 margins, GARCH and inference details; validation/synthetic feasibility; dated amendment |
-| 3. Stage B | November 2026 | Matched attention forecasts, seeds, selection records and cost |
-| 4. Stages C–D | December 2026–15 January 2027 | Calibration/GARCH comparisons, ablations, group diagnostics and sensitivity |
-| 5. Review and freeze | 16–31 January 2027 | Complete A–D review and published full-study lock before 1 February UTC |
-| 6. Conditional future evaluation | 1 February–30 July 2027 | Frozen forecast/update rules; endpoint analysis after all outcomes close |
-| 7. Interpretation and doctoral development | August–September 2027 | Final comparisons, limitations and supervisor-led extension |
-
-The attention specification is the immediate bottleneck. I still need to settle causal features, training-label availability and seed aggregation; training cost and variation across seeds are feasibility risks to measure, not failures already observed in the new study. The dates above are a workload proposal rather than a demonstrated four-month completion estimate. Any incomplete full-study requirement at the January review triggers a dated amendment reserving a later future window. Outcomes already observed cannot be relabelled prospective.
-
-## 8. Reproducibility, design status and limitations
-
-The immutable protocol-v1 and active foundation tag protocol-v1.1 are documented in the [registration record](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/docs/preregistration.md). This revision adds explicit exposition and draft design choices without changing the machine-readable lock. B–D, GARCH and prospective evidence remain pending. New-method superiority and universal conditional coverage are not established.
-
-Public Stage A artifacts contain aggregate metrics, source commit, protocol/snapshot hashes and hashes of local per-origin outputs. Raw data and full predictions remain local (raw_predictions_public=false). Independent recomputation needs the exact snapshot; --restore rejects revised vendor bytes. Public tables alone cannot reconstruct the complete evaluation. See the [data card](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/docs/data_card.md).
-
-Historical inspection, the archived attention run's different evaluation dates, imperfect Low-based volatility measurement, dependent multi-step losses and small future group counts constrain conclusions. This Markdown file is the active proposal; Word is an export reviewed when needed. VN30/BID remain historical preparation in legacy/.
-
-New references [24–29] were checked against DOI metadata and primary papers or author/publisher records on 8 October 2026. This does not claim a new full-text audit of references [1–23].
+The primary family compares volatility-scaled delayed ACI with volatility-scaled rolling interval score. Holm adjustment controls familywise error at 5%. Circular block bootstrap uses 30-day blocks, with sensitivity at 15/60 days. The Bartlett-HAC DM diagnostic follows Amendment 001, with minimum sample size max(50,5h). Freeze the exact test construction and treatment of infinite scores before inference; undefined finite-mean comparisons are inconclusive. Kupiec [24] and Christoffersen [25] are secondary miss-rate/dependence diagnostics. Overlapping horizons prevent interpreting outcomes as independent Bernoulli trials; report non-overlapping-origin sensitivity and its sample-size limitations. Trading profitability is outside scope.
 
 ## References
 
@@ -193,7 +233,7 @@ New references [24–29] were checked against DOI metadata and primary papers or
 
 [9] Hansen, P. R., Lunde, A., and Nason, J. M. (2011). [The Model Confidence Set](https://doi.org/10.3982/ECTA5771). Econometrica, 79(2), 453–497.
 
-[10] Meese, R. A., and Rogoff, K. (1983). [Empirical exchange rate models of the seventies: Do they fit out of sample–](https://www.sciencedirect.com/science/article/pii/002219968390017X). Journal of International Economics, 14(1–2), 3–24.
+[10] Meese, R. A., and Rogoff, K. (1983). [Empirical exchange rate models of the seventies: Do they fit out of sample?](https://www.sciencedirect.com/science/article/pii/002219968390017X). Journal of International Economics, 14(1–2), 3–24.
 
 [11] Welch, I., and Goyal, A. (2008). [A Comprehensive Look at The Empirical Performance of Equity Premium Prediction](https://doi.org/10.1093/rfs/hhm014). The Review of Financial Studies, 21(4), 1455–1508.
 
@@ -231,4 +271,4 @@ New references [24–29] were checked against DOI metadata and primary papers or
 
 [28] Patton, A. J. (2011). [Volatility forecast comparison using imperfect volatility proxies](https://doi.org/10.1016/j.jeconom.2010.03.034). Journal of Econometrics, 160(1), 246–256.
 
-[29] Andersen, T. G. and Bollerslev, T. and Diebold, F. X. and Labys, P. (2003). [Modeling and Forecasting Realized Volatility](https://doi.org/10.1111/1468-0262.00418). Econometrica, 71(2), 579–625.
+[29] Andersen, T. G., Bollerslev, T., Diebold, F. X., and Labys, P. (2003). [Modeling and Forecasting Realized Volatility](https://doi.org/10.1111/1468-0262.00418). Econometrica, 71(2), 579–625.
