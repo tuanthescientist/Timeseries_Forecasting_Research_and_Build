@@ -13,7 +13,7 @@ The saved run loads 4,408 source rows through 4 September 2026, reindexes to 4,6
 
 The notebook searches smoothing parameters by a discrete grid and Powell refinement **using the same final 30 outcomes**. The 3.97 percentage-point reduction is a retrospective tuning result. The smoothed MAPE does not estimate performance on an untouched future window. No persistence comparison is recorded in this saved evaluation.
 
-Source: [NeuralProphet notebook](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/notebooks/vn30-forecast-neuralprophet.ipynb), backtest and raw/smoothed metric cells.
+Source: [NeuralProphet notebook](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/research/btc-interval-calibration/legacy/notebooks/vn30-forecast-neuralprophet.ipynb), backtest and raw/smoothed metric cells.
 
 ## Bitcoin Low / TensorFlow
 
@@ -27,7 +27,7 @@ Scaler fitting uses only training rows. The model's early stopping and learning-
 
 The future 30-day recursive forecast holds non-Low features constant; its accuracy is not measured by the table above. Live downloads, package versions and random training can change the result on rerun.
 
-Source: [TensorFlow notebook](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/notebooks/btc-low-forecast-tensorflow.ipynb), split, windowing, training and evaluation cells.
+Source: [TensorFlow notebook](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/research/btc-interval-calibration/legacy/notebooks/btc-low-forecast-tensorflow.ipynb), split, windowing, training and evaluation cells.
 
 ## BID / scikit-learn ExtraTrees
 
@@ -48,10 +48,10 @@ ExtraTrees mean daily direction accuracy is 38.889%, balanced direction accuracy
 
 History was inspected in earlier experiments, as the original notebook states. Validation-based selection inside this run does not make the full history a pristine prospective test. The notebook also flags an OHLC inconsistency and a missing September date for source verification. No trading-profit claim follows from these results.
 
-Source: [ExtraTrees notebook](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/notebooks/stock-forecast-sklearn.ipynb), frozen configuration, test comparison table and scope notes.
+Source: [ExtraTrees notebook](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/research/btc-interval-calibration/legacy/notebooks/stock-forecast-sklearn.ipynb), frozen configuration, test comparison table and scope notes.
 
 ## Relationship to the supplementary study
 
-The numbered notebooks use their own snapshots, 1/5/20-observation return horizons and evaluation protocol. Their aggregate files in results/vn30/ and results/bid/ are **not** the source of the three primary projects' scores. They are documented separately in [supplementary results](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/docs/supplementary/preliminary_results.md).
+The numbered notebooks use their own snapshots, 1/5/20-observation return horizons and evaluation protocol. Their aggregate files in results/vn30/ and results/bid/ are **not** the source of the three primary projects' scores. They are documented separately in [supplementary results](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/research/btc-interval-calibration/legacy/docs/supplementary/preliminary_results.md).
 
-See [evaluation designs](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/docs/evaluation.md) and [data provenance](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/docs/data.md) for what must be fixed before making a generalisation claim.
+See [evaluation designs](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/research/btc-interval-calibration/legacy/docs/evaluation.md) and [data provenance](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/research/btc-interval-calibration/legacy/docs/data.md) for what must be fixed before making a generalisation claim.

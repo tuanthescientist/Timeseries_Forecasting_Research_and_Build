@@ -3,24 +3,21 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "timeseries-research"
-version = "0.2.0"
-description = "Rolling-origin evaluation, persistence baselines and conformal prediction intervals for financial return forecasts"
+name = "btc-interval-calibration"
+version = "0.3.0"
+description = "Auditable BTC daily-Low forecasting and delayed-feedback interval calibration"
 readme = "README.md"
 requires-python = ">=3.11"
 license = {text = "MIT"}
 authors = [{name = "Tuan Tran"}]
-dependencies = [
-    "numpy>=1.26,<3",
-    "pandas>=2.2",
-    "scikit-learn>=1.4",
-    "scipy>=1.11",
-    "matplotlib>=3.8",
-]
+dependencies = []
 
 [project.optional-dependencies]
-notebooks = ["nbclient>=0.10", "nbformat>=5.9", "ipykernel>=6.29"]
-dev = ["timeseries-research[notebooks]", "ruff>=0.5"]
+dev = ["ruff==0.16.10"]
+acquisition = ["yfinance>=0.2"]
+attention = ["tensorflow==2.19.0", "numpy>=1.26", "scikit-learn>=1.4"]
+statistics = ["scipy>=1.11"]
+documents = ["python-docx>=1.1"]
 
 [tool.setuptools.packages.find]
 where = ["src"]
@@ -28,7 +25,7 @@ where = ["src"]
 [tool.ruff]
 line-length = 100
 target-version = "py311"
-extend-exclude = ["notebooks"]
+extend-exclude = ["legacy", "notebooks"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "W", "B"]

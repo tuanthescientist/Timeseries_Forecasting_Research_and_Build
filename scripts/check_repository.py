@@ -1,93 +1,72 @@
-"""Repository hygiene checks that need no network and no market data.
+"""Offline structural checks for the active BTC project and preserved archive."""
+from __future__ import annotations
 
-* notebooks are valid, small, and contain no machine-specific paths in code or outputs;
-* Markdown links between repository files resolve;
-* no raw market data, credentials or environment files are tracked.
-"""
-
+import hashlib
 import json
 import re
 import subprocess
 from pathlib import Path
 from urllib.parse import unquote
 
-ROOT = Path(__file__).resolve().parents[1]
-MAX_NOTEBOOK_BYTES = 3_000_000
-LOCAL_PATH = re.compile(
-    r"[A-Za-z]:\\(?:Users|Data Science)\\|/home/[A-Za-z0-9_.-]+/|/Users/[A-Za-z0-9_.-]+/")
-FORBIDDEN_TRACKED = re.compile(
-    r"(^|/)(\.env(\..*)?|kaggle\.json|.*credentials.*\.json)$|^data/raw/(?!\.gitkeep$)")
+from btcforecast.data import ROOT, verify_snapshot
+from btcforecast.protocol import load_protocol
 
-
-def tracked_files():
-    try:
-        out = subprocess.run(["git", "ls-files"], cwd=ROOT, capture_output=True, text=True,
-                             check=True).stdout
-    except (OSError, subprocess.CalledProcessError):
-        return None
-    return out.splitlines()
-
-
-def check_notebooks(errors):
-    notebooks = sorted((ROOT / "notebooks").rglob("*.ipynb"))
-    if not notebooks:
-        errors.append("No notebooks found")
-    for path in notebooks:
-        if path.stat().st_size > MAX_NOTEBOOK_BYTES:
-            errors.append(f"{path.name}: larger than {MAX_NOTEBOOK_BYTES} bytes")
-        nb = json.loads(path.read_text(encoding="utf-8"))
-        if nb.get("nbformat") != 4 or not nb.get("cells"):
-            errors.append(f"Invalid notebook: {path.name}")
-            continue
-        for number, cell in enumerate(nb["cells"], 1):
-            text = "".join(cell.get("source", []))
-            for output in cell.get("outputs", []):
-                text += "".join(output.get("text", []))
-                text += "".join(output.get("traceback", []))
-                text += "".join(output.get("data", {}).get("text/plain", []))
-                if output.get("output_type") == "error":
-                    errors.append(f"{path.name} cell {number}: saved error output")
-            if LOCAL_PATH.search(text):
-                errors.append(f"{path.name} cell {number}: machine-specific path")
-    return notebooks
-
-
-def check_links(errors):
-    markdown = [ROOT / "README.md", ROOT / "CONTRIBUTING.md"]
-    for folder in ("docs", "data", "results"):
-        markdown.extend((ROOT / folder).rglob("*.md"))
-    documents = [(p, p.read_text(encoding="utf-8")) for p in markdown if p.exists()]
-    for path in sorted((ROOT / "notebooks").rglob("*.ipynb")):
-        for cell in json.loads(path.read_text(encoding="utf-8"))["cells"]:
-            if cell["cell_type"] == "markdown":
-                documents.append((path, "".join(cell["source"])))
-    for path, text in documents:
-        for target in re.findall(r"\]\(([^)\s]+)\)", text):
-            if target.startswith(("https://", "http://", "mailto:", "#")):
-                continue
-            target = unquote(target.split("#")[0])
-            if target and not (path.parent / target).exists():
-                errors.append(f"Broken link in {path.relative_to(ROOT)}: {target}")
-    return len(documents)
-
-
-def check_tracked(errors):
-    files = tracked_files()
-    if files is None:
-        return
-    for name in files:
-        if FORBIDDEN_TRACKED.search(name):
-            errors.append(f"Must not be tracked: {name}")
+URL_PREFIX = (
+    "https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/"
+)
+ALLOWED_MARKET_FILES = {"legacy/data/raw/vn30.csv", "legacy/data/raw/bid.csv"}
 
 
 def main():
     errors = []
-    notebooks = check_notebooks(errors)
-    documents = check_links(errors)
-    check_tracked(errors)
+    load_protocol()
+    manifest = json.loads((ROOT / "data/manifest.json").read_text())
+    verify_snapshot("DEMO")
+    if manifest["datasets"]["BTC"]["status"] == "locked":
+        verify_snapshot("BTC")
+    notebooks = list((ROOT / "notebooks").rglob("*.ipynb"))
+    for path in notebooks:
+        data = json.loads(path.read_text(encoding="utf-8"))
+        if data.get("nbformat") != 4 or not data.get("cells"):
+            errors.append(f"Invalid notebook: {path}")
+    archive = manifest["archived_notebook"]
+    actual_hash = hashlib.sha256((ROOT / archive["path"]).read_bytes()).hexdigest()
+    if actual_hash != archive["sha256"]:
+        errors.append("Original BTC archive was modified")
+    markdown = [ROOT / "README.md", ROOT / "CONTRIBUTING.md"]
+    markdown += list((ROOT / "docs").rglob("*.md"))
+    markdown += list((ROOT / "notebooks").rglob("*.md"))
+    markdown += list((ROOT / "results/tables").rglob("*.md"))
+    for path in markdown:
+        text = path.read_text(encoding="utf-8")
+        if re.search(r"[A-Za-z]:\\(?:Users|Data Science)\\|file://", text):
+            errors.append(f"Local machine path: {path}")
+        for link in re.findall(r"\]\(([^)\s]+)\)", text):
+            if link.startswith(URL_PREFIX):
+                marker = "/research/btc-interval-calibration/"
+                if marker in link:
+                    relative = unquote(link.split(marker, 1)[1].split("#", 1)[0])
+                    if not (ROOT / relative).exists():
+                        errors.append(f"Missing GitHub target: {relative}")
+            elif not link.startswith(("https://", "http://", "mailto:", "#")):
+                if not (path.parent / unquote(link.split("#", 1)[0])).exists():
+                    errors.append(f"Broken relative link: {path}: {link}")
+    tracked = subprocess.run(["git", "ls-files"], cwd=ROOT, check=True,
+                             capture_output=True, text=True).stdout.splitlines()
+    for name in tracked:
+        parts = Path(name).parts
+        if (any(part in {".venv", "venv", "lightning_logs", "__pycache__"} for part in parts)
+                or name.startswith("results/local/") or "/results/local/" in name):
+            errors.append(f"Tracked local artifact: {name}")
+        if name.startswith("data/raw/") and name != "data/raw/.gitkeep":
+            errors.append(f"Raw BTC data must remain local: {name}")
+        if name.startswith("legacy/data/raw/") and name not in ALLOWED_MARKET_FILES | {
+                "legacy/data/raw/.gitkeep"}:
+            errors.append(f"Unlisted historical snapshot: {name}")
     if errors:
         raise SystemExit("\n".join(errors))
-    print(f"Checked {len(notebooks)} notebooks and {documents} Markdown documents")
+    print(f"Offline checks passed: {len(notebooks)} active/archive notebooks; BTC status "
+          f"{manifest['datasets']['BTC']['status']}; no model fitting or downloads.")
 
 
 if __name__ == "__main__":

@@ -17,7 +17,7 @@ row. Models refit every 20 origins. Hyper-parameters were chosen on a validation
 and frozen before the test segment was scored. The test window starts on 3 January 2023
 (912 origins on VN30, 905 on BID) and ends in August 2026. Differences from persistence
 use a Diebold–Mariano test with HAC variance, a block bootstrap, and a Holm correction
-within each dataset. Full rules: [protocol](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/docs/supplementary/protocol.md). Data limits: [data card](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/docs/supplementary/data.md).
+within each dataset. Full rules: [protocol](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/research/btc-interval-calibration/legacy/docs/supplementary/protocol.md). Data limits: [data card](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/research/btc-interval-calibration/legacy/docs/supplementary/data.md).
 
 ## Point forecasts
 
@@ -38,10 +38,10 @@ Below 1 would beat "no change".
 No cell is distinguishable from persistence after Holm correction (adjusted p = 1 for all
 24 model-by-horizon tests). The ridge ratio near 0.97 at h = 20 appears on both series and
 is recorded as a lead for more assets, not as a finding. Source tables:
-[VN30](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/results/vn30/02_test_point_metrics.csv),
-[BID](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/results/bid/02_test_point_metrics.csv),
-[VN30 tests](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/results/vn30/02_significance_vs_persistence.csv),
-[BID tests](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/results/bid/02_significance_vs_persistence.csv).
+[VN30](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/research/btc-interval-calibration/legacy/results/vn30/02_test_point_metrics.csv),
+[BID](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/research/btc-interval-calibration/legacy/results/bid/02_test_point_metrics.csv),
+[VN30 tests](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/research/btc-interval-calibration/legacy/results/vn30/02_significance_vs_persistence.csv),
+[BID tests](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/research/btc-interval-calibration/legacy/results/bid/02_significance_vs_persistence.csv).
 
 ## Interval coverage at h = 5
 
@@ -60,8 +60,8 @@ there is too wide later. Inside volatility terciles taken from the validation se
 same adaptive intervals at h = 5 and 80% cover about 0.71–0.74 of calm origins and about
 0.87–0.93 of turbulent ones. Marginal calibration is therefore not conditional calibration.
 That gap is the first doctoral experiment, not a completed method. Source:
-[VN30](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/results/vn30/03_interval_summary.csv),
-[BID](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/results/bid/03_interval_summary.csv).
+[VN30](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/research/btc-interval-calibration/legacy/results/vn30/03_interval_summary.csv),
+[BID](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/research/btc-interval-calibration/legacy/results/bid/03_interval_summary.csv).
 
 ## What these numbers do not support
 
@@ -69,4 +69,4 @@ That gap is the first doctoral experiment, not a completed method. Source:
 * A claim that adaptive conformal is conditionally valid, or that the original coverage
   guarantee applies to the delayed-feedback update used here.
 * Any statement about the four VN30 rows dated on weekends until those dates are reconciled
-  with the exchange calendar. See [data card](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/docs/supplementary/data.md).
+  with the exchange calendar. See [data card](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/research/btc-interval-calibration/legacy/docs/supplementary/data.md).
