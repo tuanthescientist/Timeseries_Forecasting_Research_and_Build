@@ -23,7 +23,9 @@ def main():
     manifest = json.loads(manifest_path.read_text())
     if target.exists() or manifest["datasets"]["BTC"]["status"] == "locked":
         raise SystemExit("Refusing to overwrite a snapshot; create a documented amendment")
-    frame = yf.download(config["instrument"], **settings, progress=False)
+    download_args = {key: value for key, value in settings.items() if key != "end_exclusive"}
+    download_args["end"] = settings["end_exclusive"]
+    frame = yf.download(config["instrument"], **download_args, progress=False)
     if frame.empty:
         raise SystemExit("Yahoo returned no data")
     if getattr(frame.columns, "nlevels", 1) > 1:
