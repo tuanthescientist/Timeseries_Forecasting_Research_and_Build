@@ -46,7 +46,7 @@ These results demonstrate preparation and identify limitations. They are not a n
 
 ## 5. Research design
 
-Acquire and validate a new daily OHLCV snapshot with retrieval UTC time, package version, source settings, SHA-256 and calendar checks. Original bytes will not be reconstructed from plots or summary metrics. The manifest now records actual acquisition on 8 October 2026: 4,404 dates through 7 October, with byte hash and retrieval metadata. Raw files remain local.
+A new daily OHLCV snapshot has been acquired and validated with retrieval UTC time, package version, source settings, SHA-256 and calendar checks. Original bytes will not be reconstructed from plots or summary metrics. The manifest now records actual acquisition on 8 October 2026: 4,404 dates through 7 October, with byte hash and retrieval metadata. Raw files remain local.
 
 Training, validation, calibration and retrospective dates are specified in the [protocol](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/docs/protocol.md). All relevant labels must be observable and remain within stage boundaries. Historical data have been inspected; that evaluation is retrospective. A future window is eligible only after the required design, snapshot and A–D freezes precede its start. Otherwise a dated amendment must select a new future window.
 
@@ -70,9 +70,9 @@ The initial implementation uses lightweight offline baselines and interval found
 
 **Foundation.** BTC scope, preserved original notebook, temporal checks, protocol and synthetic CI. This is the present repository change.
 
-**Data and model freeze.** Acquire the snapshot, reconcile conventions and lock the exact attention feature/training specification. These steps remain pending.
+**Data and model freeze.** BTC snapshot locked (4,404 dates through 2026-10-07, SHA-256 in manifest); lock the exact attention feature/training specification. Model specification remains pending.
 
-**Retrospective A–D.** Baselines, horizon strategies, calibration competitors and ablations with complete run records. No BTC run under this protocol is published.
+**Retrospective A–D.** Baselines, horizon strategies, calibration competitors and ablations with complete run records. Stage A baseline evidence is published; B–D remain pending.
 
 **Prospective evaluation.** Freeze the earlier stages before a genuinely future window. The candidate dates and late-completion rule are in the registration record. No prospective predictions or outcomes are claimed.
 
@@ -80,7 +80,9 @@ The initial implementation uses lightweight offline baselines and interval found
 
 ## 8. Reproducibility and claims
 
-[Registration status](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/docs/preregistration.md) distinguishes a foundation design tag from a complete study preregistration. Missing acquisition evidence is explicit in the [data card](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/docs/data_card.md). The 3.40% saved score belongs to the archived notebook; new code has no new BTC accuracy evidence.
+[Registration status](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/docs/preregistration.md) distinguishes a foundation design tag from a complete study preregistration. Locked snapshot acquisition evidence is in the [data card](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/docs/data_card.md) and manifest. The 3.40% saved score belongs to the archived notebook; new Stage A baseline evidence is reported separately.
+
+Public Stage A artifacts contain aggregate metrics and run provenance, including hashes of the local per-origin outputs. The raw snapshot and full per-origin predictions are not distributed (`raw_predictions_public: false`). Independent recomputation therefore requires the exact snapshot identified in the manifest. The acquisition script supports `--restore` and rejects a download whose hash differs; vendor revisions may prevent exact restoration. Public tables alone are insufficient to recompute the complete evaluation. See the [Stage A evidence](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/results/tables/README.md).
 
 docs/proposal.md is the single active proposal source. Word is generated on demand and checked before sharing. VN30, BID and earlier supplementary results remain in legacy/ as historical preparation; they are not pooled into BTC findings.
 
