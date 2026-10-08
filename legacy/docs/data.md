@@ -4,7 +4,7 @@ The author confirmed on 7 October 2026 that the supplied VN30 and BID CSVs were 
 
 ## GitHub availability
 
-**Both supplied CSVs are published on main as of 8 October 2026:** [VN30 CSV](https://www.investing.com/) and [BID CSV](https://www.investing.com/). They are stored under the names expected by the notebook loaders and dataset configuration. Their contents are unchanged from the supplied files. Other raw files remain ignored. Synthetic demo data and derived supplementary results are also retained.
+Both supplied CSVs were previously published but are now removed from main tracking. Local copies retain their original bytes; prior Git history remains accessible. Redistribution rights are unverified.
 
 | Supplied file | Source page | Rows and date range | Relation to saved experiments |
 | --- | --- | --- | --- |
