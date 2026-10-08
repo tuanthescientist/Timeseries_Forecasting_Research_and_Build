@@ -3,8 +3,8 @@
 # Evaluation protocol
 
 This is the single protocol used by all three notebooks. It is implemented in
-[`src/tsresearch/`](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/tree/research/btc-interval-calibration/legacy/src/tsresearch) and its integrity properties are unit-tested.
-The dates below were fixed in [`configs/protocol.json`](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/research/btc-interval-calibration/legacy/configs/protocol.json) before
+[`src/tsresearch/`](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/tree/main/legacy/src/tsresearch) and its integrity properties are unit-tested.
+The dates below were fixed in [`configs/protocol.json`](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/legacy/configs/protocol.json) before
 any model in this repository was run.
 
 ## Forecast target and information set

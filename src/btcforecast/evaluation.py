@@ -58,8 +58,14 @@ def summarise(records: list[dict]) -> list[dict]:
     result = []
     for (model, horizon), group in sorted(groups.items()):
         errors = [abs(float(r["actual"]) - float(r["pred"])) for r in group]
+        baseline_mae = statistics.mean(abs(float(r["actual"]) - float(r["origin_low"]))
+                                       for r in group)
         result.append({"model": model, "horizon": horizon, "n": len(group),
                        "mae": statistics.mean(errors),
+                       "relative_mae_vs_persistence": (statistics.mean(errors) / baseline_mae
+                                                       if baseline_mae > 0 else None),
+                       "price_mape_percent": 100 * statistics.mean(
+                           e / float(r["actual"]) for e, r in zip(errors, group, strict=True)),
                        "rmse": math.sqrt(statistics.mean(e * e for e in errors)),
                        "mase": statistics.mean(e / float(r["mase_scale"])
                                                for e, r in zip(errors, group, strict=True))})

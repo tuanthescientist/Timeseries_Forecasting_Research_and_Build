@@ -15,9 +15,12 @@
   },
   "local_path": "data/raw/btc_usd_daily.csv",
   "manifest_key": "BTC",
-  "retrieved_at_utc": null,
-  "snapshot_sha256": null,
-  "status": "not_acquired",
-  "horizons": [1, 5, 20, 30],
-  "original_notebook_snapshot_recovered": false
+  "horizons": [
+    1,
+    5,
+    20,
+    30
+  ],
+  "original_notebook_snapshot_recovered": false,
+  "status_source": "data/manifest.json datasets.BTC"
 }

@@ -1,6 +1,6 @@
 import csv
-import hashlib
 import json
+import runpy
 import tempfile
 import unittest
 from pathlib import Path
@@ -49,9 +49,9 @@ class SnapshotTests(unittest.TestCase):
                     with self.assertRaises(ValueError):
                         read_snapshot(path)
 
-    def test_published_legacy_market_bytes_preserved(self):
-        expected = {"vn30.csv": "1b91f9f2d89a35e15478eac85ff6de6d227458b427ff0e2f27b04c9e8042136e",
-                    "bid.csv": "918ad01972453e616a6042da5a897c7137cf943105bb6286fb6dbc21ed7923d4"}
-        for name, digest in expected.items():
-            snapshot = (ROOT / "legacy/data/raw" / name).read_bytes()
-            self.assertEqual(hashlib.sha256(snapshot).hexdigest(), digest)
+    def test_raw_policy_covers_legacy_and_nested_paths(self):
+        policy = runpy.run_path(str(ROOT / "scripts/check_repository.py"))["forbidden_raw_path"]
+        for name in ["data/raw/btc.csv", "legacy/data/raw/vn30.csv", "other/data/raw/x.csv"]:
+            self.assertTrue(policy(name))
+        self.assertFalse(policy("legacy/data/raw/.gitkeep"))
+        self.assertFalse(policy("data/demo/btc_daily.csv"))

@@ -4,7 +4,7 @@ Proposed doctoral research · Trần Anh Tuấn · 8 October 2026
 
 ## Abstract
 
-I propose to study how forecast horizon, volatility change and delayed outcome availability affect BTC-USD daily-Low predictions and interval calibration. My original TensorFlow notebook supplies a concrete attention-based implementation and reports 3.40% MAPE for thirty rolling one-step predictions. It does not evaluate a thirty-step path from one origin, and its original downloaded bytes are unavailable. The new study therefore starts with a documented snapshot and a chronological protocol, then compares horizon strategies and established interval methods. Its methodological candidate combines horizon-specific residual histories with causal volatility scaling and explicit delayed updates. Existing methods and simple baselines may prove sufficient; negative findings will be retained. The repository currently contains foundation code and temporal checks, not new BTC results.
+I propose to study how forecast horizon, volatility change and delayed outcome availability affect BTC-USD daily-Low predictions and interval calibration. My original TensorFlow notebook supplies a concrete attention-based implementation and reports 3.40% MAPE for thirty rolling one-step predictions. It does not evaluate a thirty-step path from one origin, and its original downloaded bytes are unavailable. The new study therefore starts with a documented snapshot and a chronological protocol, then compares horizon strategies and established interval methods. Its methodological candidate combines horizon-specific residual histories with causal volatility scaling and explicit delayed updates. Existing methods and simple baselines may prove sufficient; negative findings will be retained. A new BTC snapshot is locked; baseline evidence is reported separately, with attention and interval comparisons pending.
 
 ## 1. Motivation and scope
 
@@ -46,9 +46,9 @@ These results demonstrate preparation and identify limitations. They are not a n
 
 ## 5. Research design
 
-Acquire and validate a new daily OHLCV snapshot with retrieval UTC time, package version, source settings, SHA-256 and calendar checks. Original bytes will not be reconstructed from plots or summary metrics. The public manifest starts with missing BTC fields and is populated only by actual acquisition.
+Acquire and validate a new daily OHLCV snapshot with retrieval UTC time, package version, source settings, SHA-256 and calendar checks. Original bytes will not be reconstructed from plots or summary metrics. The manifest now records actual acquisition on 8 October 2026: 4,404 dates through 7 October, with byte hash and retrieval metadata. Raw files remain local.
 
-Training, validation, calibration and retrospective dates are specified in the [protocol](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/research/btc-interval-calibration/docs/protocol.md). All relevant labels must be observable and remain within stage boundaries. Historical data have been inspected; that evaluation is retrospective. A future window is eligible only after the required design, snapshot and A–D freezes precede its start. Otherwise a dated amendment must select a new future window.
+Training, validation, calibration and retrospective dates are specified in the [protocol](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/docs/protocol.md). All relevant labels must be observable and remain within stage boundaries. Historical data have been inspected; that evaluation is retrospective. A future window is eligible only after the required design, snapshot and A–D freezes precede its start. Otherwise a dated amendment must select a new future window.
 
 Start with persistence and trailing geometric drift. Use fixed training-only MASE scaling, MAE, RMSE and relative MAE versus persistence. MAPE is secondary; returns near zero will not be scored by MAPE. Neural comparisons require a frozen feature/training specification and exports recording origin, horizon, information cutoff, fully realised training-label cutoff, selection cutoff and protocol hash.
 
@@ -80,7 +80,7 @@ The initial implementation uses lightweight offline baselines and interval found
 
 ## 8. Reproducibility and claims
 
-[Registration status](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/research/btc-interval-calibration/docs/preregistration.md) distinguishes a foundation design tag from a complete study preregistration. Missing acquisition evidence is explicit in the [data card](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/research/btc-interval-calibration/docs/data_card.md). The 3.40% saved score belongs to the archived notebook; new code has no new BTC accuracy evidence.
+[Registration status](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/docs/preregistration.md) distinguishes a foundation design tag from a complete study preregistration. Missing acquisition evidence is explicit in the [data card](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/docs/data_card.md). The 3.40% saved score belongs to the archived notebook; new code has no new BTC accuracy evidence.
 
 docs/proposal.md is the single active proposal source. Word is generated on demand and checked before sharing. VN30, BID and earlier supplementary results remain in legacy/ as historical preparation; they are not pooled into BTC findings.
 
@@ -131,3 +131,7 @@ docs/proposal.md is the single active proposal source. Word is generated on dema
 [22] Xu, C., and Xie, Y. (2021). [Conformal prediction interval for dynamic time-series](https://proceedings.mlr.press/v139/xu21h.html). Proceedings of the 38th International Conference on Machine Learning, PMLR 139, 11559–11569.
 
 [23] Zaffran, M., Feron, O., Goude, Y., Josse, J., and Dieuleveut, A. (2022). [Adaptive Conformal Predictions for Time Series](https://proceedings.mlr.press/v162/zaffran22a.html). Proceedings of the 39th International Conference on Machine Learning, PMLR 162, 25834–25866.
+
+## Amendment and evidence boundary
+
+[Amendment 001](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/docs/amendments/amendment-001.md) preserves protocol-v1. Preparation bridge: 2026-10-01–2027-01-31. Candidate future window: 2027-02-01–2027-07-30, conditional on full A–D freeze before its start. [Audit](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/docs/audit-2026-10-08.md). Stage A covers simple baselines; B–D, superiority and prospective evidence remain pending.

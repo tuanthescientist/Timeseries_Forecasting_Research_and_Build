@@ -2,16 +2,17 @@
   "schema_version": 1,
   "datasets": {
     "BTC": {
-      "status": "not_acquired",
+      "status": "locked",
       "path": "data/raw/btc_usd_daily.csv",
       "source": "Yahoo Finance via yfinance",
       "source_url": "https://finance.yahoo.com/quote/BTC-USD/history/",
-      "retrieved_at_utc": null,
-      "sha256": null,
-      "rows": null,
-      "first_date": null,
-      "last_date": null,
-      "original_snapshot_recovered": false
+      "retrieved_at_utc": "2026-10-08T09:28:01.472319+00:00",
+      "sha256": "e17858686ed88e2d8ac4a02aabb2ea5eec250062d68e78cfc8105b46e9381110",
+      "rows": 4404,
+      "first_date": "2014-09-17",
+      "last_date": "2026-10-07",
+      "original_snapshot_recovered": false,
+      "yfinance_version": "1.1.0"
     },
     "DEMO": {
       "status": "locked",
@@ -29,8 +30,6 @@
     "source_commit": "eb1eac0d4fc70e42eba3be0aa07b5b24198d8c63",
     "sha256": "f77e5cb36c90a0ed237d7f00dc1d6d5a00f3a9f76f7ce8b6c3b31b9fc5059df0"
   },
-  "historical_market_files": [
-    "legacy/data/raw/vn30.csv",
-    "legacy/data/raw/bid.csv"
-  ]
+  "historical_market_files": [],
+  "historical_market_policy": "VN30/BID removed from current tracking; local copies retained; prior Git history still contains bytes; redistribution rights unverified"
 }
