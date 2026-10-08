@@ -17,6 +17,8 @@ The saved 3.40% is not a 30-step forecast from one origin. The notebook's recurs
 
 **Read:** [proposal](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/docs/proposal.md) → [protocol](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/docs/protocol.md) → [registration status](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/docs/preregistration.md) → [data card](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/docs/data_card.md). See the [original notebook](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/notebooks/archive/btc-low-forecast-tensorflow.ipynb), [decisions](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/tree/main/docs/decisions) and [bibliography](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/docs/references.bib).
 
+The installable distribution is named **btc-interval-calibration**; Python code imports **btcforecast** (for example, `from btcforecast.experiments import run_stage`). These names identify the distribution and its import package, respectively.
+
 ## Reproduce the foundation
 
     python -m pip install -c requirements-lock.txt -e ".[dev]"
@@ -39,6 +41,6 @@ Next: freeze the attention/features specification, run and audit retrospective s
 
 [Legacy portfolio](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/legacy/README.md) retains VN30, BID, supplementary code/results; vendor CSVs are now local only on main. These assets provide historical preparation and are excluded from BTC research claims. Cite [CITATION.cff](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/CITATION.cff) with the exact commit.
 
-[Amendment 001](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/docs/amendments/amendment-001.md): bridge 2026-10-01–2027-01-31; candidate future window 2027-02-01–2027-07-30, conditional on a complete A–D freeze. [Audit](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/docs/audit-2026-10-08.md). Legacy CSV removal does not purge earlier Git history.
+[Amendment 001](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/docs/amendments/amendment-001.md): bridge 2026-10-01–2027-01-31; conditional future window 2027-02-01–2027-07-30, conditional on a complete A–D freeze. [Audit](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/docs/audit-2026-10-08.md). Legacy CSV removal does not purge earlier Git history.
 
 [Stage A results](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/results/tables/README.md): persistence MAE USD 1,309.84 at h=1 and USD 8,176.55 at h=30; log drift has higher MAE at all four horizons. This is retrospective baseline evidence, without a neural comparison or significance claim.
