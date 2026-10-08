@@ -19,5 +19,9 @@
     "2024-01-01",
     "2026-09-30"
   ],
-  "interpretation": "Retrospective baseline evidence; no attention or interval superiority established"
+  "interpretation": "Retrospective baseline evidence; no attention or interval superiority established",
+  "artifact_hash_scope": "artifacts hashes identify local run bytes, including CSV CRLF; published_artifacts identifies LF-normalised tracked aggregates",
+  "published_artifacts": {
+    "results/tables/stage_a_point_metrics.csv": "c6cfac96c79b18b12ea158ae810bff177c74921c4bc5d72135e6915af43288c0"
+  }
 }

@@ -1,6 +1,6 @@
 # Original BTC notebook
 
-[btc-low-forecast-tensorflow.ipynb](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/research/btc-interval-calibration/notebooks/archive/btc-low-forecast-tensorflow.ipynb)
+[btc-low-forecast-tensorflow.ipynb](https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build/blob/main/notebooks/archive/btc-low-forecast-tensorflow.ipynb)
 is preserved byte-for-byte from commit eb1eac0. It contains saved historical output and
 live-download/training cells. Active CI does not execute it.
 
