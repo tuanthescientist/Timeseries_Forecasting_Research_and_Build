@@ -1,10 +1,3 @@
-# Tested constraints for Python 3.11 / 3.12 (direct dependencies only).
-numpy==2.2.6
-pandas==3.0.6
-scikit-learn==1.9.1
-scipy==1.17.1
-matplotlib==3.11.2
-nbclient==0.11.0
-nbformat==5.11.1
-ipykernel==7.4.0
+# Constraint used by lightweight CI; core evaluation uses the Python standard library.
+# Optional acquisition/attention/statistics environments are not locked by this file.
 ruff==0.16.10

@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "instrument": "BTC-USD",
+  "target": "low",
+  "frequency": "daily",
+  "session_boundary": "UTC calendar day",
+  "source": "Yahoo Finance via yfinance",
+  "source_url": "https://finance.yahoo.com/quote/BTC-USD/history/",
+  "download": {
+    "start": "2014-09-17",
+    "end_exclusive": "2026-10-08",
+    "interval": "1d",
+    "auto_adjust": false,
+    "repair": false
+  },
+  "local_path": "data/raw/btc_usd_daily.csv",
+  "manifest_key": "BTC",
+  "retrieved_at_utc": null,
+  "snapshot_sha256": null,
+  "status": "not_acquired",
+  "horizons": [1, 5, 20, 30],
+  "original_notebook_snapshot_recovered": false
+}

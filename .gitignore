@@ -14,8 +14,6 @@ dist/
 kaggle.json
 data/raw/*
 !data/raw/.gitkeep
-!data/raw/vn30.csv
-!data/raw/bid.csv
 results/local/
 models/
 checkpoints/
@@ -30,3 +28,12 @@ extratrees_results/
 .ipython/
 .DS_Store
 Thumbs.db
+
+# Archived portfolio snapshots remain published; other raw files stay local.
+legacy/data/raw/*
+!legacy/data/raw/.gitkeep
+!legacy/data/raw/vn30.csv
+!legacy/data/raw/bid.csv
+legacy/results/local/
+results/runs/*
+!results/runs/.gitkeep

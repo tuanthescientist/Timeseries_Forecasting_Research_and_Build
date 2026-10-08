@@ -1,25 +1,17 @@
 # Contributing
 
-The three original notebooks in notebooks/ are the primary portfolio. Keep their targets, evaluation designs and saved-run provenance explicit. Changes to saved model results require a documented new run; distinguish retrospective tuning from held-out performance.
+Use a branch and a reviewed pull request. The active project is BTC-USD daily Low.
+Legacy portfolio assets must remain identifiable and must not be pooled with new results.
 
-Use a focused branch and say which project, supplementary research question or defect it addresses.
+Run unit tests, repository checks and synthetic smoke checks before changing foundations.
+CI must not download market data or train the archived attention model.
 
-```bash
-python -m pip install -c requirements-lock.txt -e ".[dev]"
-ruff check .
-python -m unittest discover -s tests -v
-python scripts/check_repository.py
-TSR_FORCE_DEMO=1 python scripts/run_notebooks.py   # optional: supplementary notebooks on synthetic data
-```
+Data acquisition is explicit. Record SHA-256, retrieval timestamp, requested dates,
+provider settings and any transformation. Never overwrite a locked snapshot silently.
 
-The following model-interface and protocol rules apply to the supplementary package. They do not describe the original three notebooks' saved runs:
+The foundation lock covers configs, temporal rules and core code. A change to these
+artifacts requires a versioned design amendment, a regenerated lock and a new tag.
+Do not describe an amendment made after seeing outcomes as an earlier preregistration.
 
-* A new model implements the interface in `src/tsresearch/models.py` and is compared with
-  persistence on identical origins; hyper-parameters are chosen on the validation segment
-  only, and the test segment is run once with frozen choices.
-* State exactly what information is available at the forecast origin. Add a test that
-  forecasts do not change when data after the origin is altered.
-* Report negative results and keep per-origin predictions reproducible.
-* Never commit credentials, `.env`, raw provider data (`data/raw/` is ignored), model
-  weights, or personal paths. `scripts/check_repository.py` enforces part of this.
-* Confirm reuse rights for imported code or data and give attribution.
+Actual result tables require complete per-origin forecasts, run metadata, data/protocol
+hashes, commit and failures. Synthetic output never constitutes financial accuracy evidence.

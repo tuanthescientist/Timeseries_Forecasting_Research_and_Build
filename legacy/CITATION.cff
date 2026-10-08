@@ -1,0 +1,22 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite the repository and the exact commit."
+title: "Financial Time-Series Forecasting: Three Notebook Projects"
+type: software
+authors:
+  - family-names: Tran
+    given-names: Tuan
+repository-code: "https://github.com/tuanthescientist/Timeseries_Forecasting_Research_and_Build"
+license: MIT
+version: 0.2.0
+date-released: 2026-10-07
+abstract: >-
+  Three original financial forecasting workflows: VN30 with NeuralProphet, Bitcoin
+  daily Low with a TensorFlow attention model, and BID with scikit-learn ExtraTrees.
+  Saved forecasts, error metrics and evaluation limitations are documented. A separate
+  supplementary study provides rolling-origin and interval-calibration infrastructure.
+keywords:
+  - time-series forecasting
+  - neuralprophet
+  - tensorflow
+  - scikit-learn
+  - financial time series
