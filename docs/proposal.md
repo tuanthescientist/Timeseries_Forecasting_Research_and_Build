@@ -8,13 +8,13 @@ Prediction errors arrive late. For a thirty-day forecast, an adaptive calibrator
 
 ## 1. Introduction
 
-The original notebook gave me a concrete starting point: 3.40% MAPE over thirty rolling one-step predictions. Reading that number alongside the forecast construction reveals a distinction that matters for this proposal. Each prediction uses newly observed history; the separate recursive path holds other features fixed and is not scored by the same metric. I therefore treat the saved result as implementation experience and make horizon alignment a condition of the new comparison. Stage A sharpens that decision. Persistence beats geometric drift in descriptive MAE at all four horizons, even though drift is a plausible extrapolation of recent price growth. I retain that result because it sets a useful standard for the attention model: complexity has to improve the same task, on the same origins, before its apparent accuracy becomes persuasive.
+The original notebook gave me a concrete starting point: 3.40% MAPE over thirty rolling one-step predictions. Reading that number alongside the forecast construction reveals a distinction that matters for this proposal. Each one-step prediction uses newly observed history. I therefore treat the saved result as implementation experience and make horizon alignment a condition of the new comparison. Stage A sharpens that decision. Persistence beats geometric drift in descriptive MAE at all four horizons, even though drift is a plausible extrapolation of recent price growth. I retain that result because it sets a useful standard for the attention model: complexity has to improve the same task, on the same origins, before its apparent accuracy becomes persuasive.
 
 Feedback takes time. At origin t, a one-day error becomes observable at t+1, whereas a thirty-day error arrives at t+30, 29 days later than the one-day error. I want to measure whether a calibrator can respond to a volatility transition while so much of its recent forecast history is still unresolved. Sustained undercoverage is the hypothesis this interval evaluation will test.
 
 I focus on BTC Low because it connects directly to the original implementation and gives the comparison a single target. It is the vendor-reported minimum of a UTC daily bar, not an executable trading price. I keep VN30 and BID as earlier work rather than pooling their different targets, calendars and saved evaluation designs into this claim. Close and intraday realised variance could support later target comparisons.
 
-The work has four retrospective stages. Stage A establishes point baselines; Stage B compares attention strategies; Stage C evaluates interval methods; Stage D examines ablations and sensitivity. A later future evaluation tests the completed design on observations unavailable at the freeze. I keep the comparison focused.
+The [timeline](#8-timeline) sets out the four retrospective stages and the subsequent future evaluation.
 
 ## 2. Background
 
@@ -123,7 +123,7 @@ Drift does not improve descriptive MAE. This motivates a demanding baseline for 
 
 I want to explain the failures. The experiment separates point-model, scaling and adaptation effects and identifies their failure conditions. Any later algorithmic innovation must be justified by these findings and compared with established adaptive methods. Negative results remain useful when they explain failed assumptions or unchanged benchmark rankings.
 
-Risks include sparse regimes, dependent outcomes, noisy volatility proxies, unstable neural/GARCH fits and an incomplete future-window freeze. Prioritise matched baselines and the eight-comparison interval family. Optional comparators can be deferred before the final freeze. Changes to core requirements require a documented design amendment.
+Risks include sparse regimes, dependent outcomes, noisy volatility proxies, unstable neural/GARCH fits and an incomplete future-window freeze. Prioritise matched baselines and the eight-comparison interval family. Optional comparators can be deferred before the final freeze. Changes to core requirements require a documented design amendment. If the attention specification is incomplete by 31 October, I will postpone Stage B until it is frozen and revise downstream dates, including the future window through an amendment if needed.
 
 Stage A is complete; neural, interval and future evaluations are the remaining work. The future evaluation will test whether any observed benefit persists after the full-study freeze.
 
@@ -203,7 +203,7 @@ r_t=\mu+\epsilon_t,\qquad \epsilon_t=\sigma_t z_t,\qquad
 \sigma_t^2=\omega+\beta_1\epsilon_{t-1}^2+\beta_2\sigma_{t-1}^2.
 $$
 
-Require $\omega>0,\ \beta_1,\beta_2\ge0,\ \beta_1+\beta_2<1$, unit innovation variance and degrees of freedom above 2. Draft settings are an expanding causal fit, a 30-day refit schedule, daily filtering and 10,000 simulated paths per origin with a fixed recorded seed. Transform each path into $Y_t\exp(\sum_{k=1}^{h}r_{t+k})$, then take alpha/2 and 1−alpha/2 quantiles. This matches the Low target and multi-step variance dynamics. Log convergence failures and paired-sample counts rather than silently dropping failed origins or substituting another model. Solver, initialisation, seed, quantile convention and failure policy must be frozen before implementation. This comparator is proposed, not executed or included in the existing lock.
+Require $\omega>0,\ \beta_1,\beta_2\ge0,\ \beta_1+\beta_2<1$, unit innovation variance and degrees of freedom above 2. Draft settings are an expanding causal fit, a 30-day refit schedule, daily filtering and 10,000 simulated paths per origin with a fixed recorded seed. Transform each path into $Y_t\exp(\sum_{k=1}^{h}r_{t+k})$, then take alpha/2 and 1−alpha/2 quantiles. This comparator is designed to fit the Low-log-change process; its adequacy for multi-step intervals will be evaluated empirically. Log convergence failures and paired-sample counts rather than silently dropping failed origins or substituting another model. Solver, initialisation, seed, quantile convention and failure policy must be frozen before implementation. This comparator is proposed, not executed or included in the existing lock.
 
 ## Appendix B. Statistical details
 
@@ -225,7 +225,11 @@ mean width $\bar W_G=|G|^{-1}\sum_{t\in G}(U-L)$, and mean interval score.
 
 Blocks start at the first common eligible origin and are scored after all endpoints mature. Incomplete blocks are excluded and counted. Overlapping outcomes still make these block summaries dependent. Undefined width ratios, insufficient group counts or too few blocks are inconclusive; infinite proposed-method width fails the finite-width criterion.
 
-Report support separately for each horizon/level only when all criteria hold. Benefit across all horizons/levels requires all eight to satisfy them. Report every component when the joint criterion fails. The 5-point and 10% margins are proposed design choices, not established literature thresholds; assess precision on validation and synthetic shifts and freeze any changes before interval evaluation. Sensitivity at 2/10 coverage points, width ratios 1.05/1.20 and block lengths 30/90 is descriptive and cannot replace a failed primary criterion. The 180-day future window may lack enough groups or complete blocks, especially at h=30; do not relax criteria after observing outcomes.
+Report support separately for each horizon/level only when all criteria hold. Benefit across all horizons/levels requires all eight to satisfy them. Report every component when the joint criterion fails.
+
+- **Decision margins:** The 5-point coverage tolerance and 10% width allowance are proposed design choices. Assess their precision on validation and synthetic shifts, then freeze them before Stage B.
+- **Sensitivity:** Coverage tolerances of 2/10 percentage points, width ratios of 1.05/1.20 and block lengths of 30/90 are descriptive alternatives. They cannot replace a failed primary criterion.
+- **Future-window limits:** The 180-day window may contain too few group observations or complete blocks, especially at h=30. Report insufficient evidence rather than relaxing criteria after observing outcomes.
 
 ### B.3 Dependent losses and multiplicity
 
